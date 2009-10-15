@@ -63,17 +63,15 @@ class Irc extends \lithium\console\Command {
 
 	protected function _connect() {
 		$this->_nick();
-		$this->_user("{$this->_nick} {$this->_config['host']} botts : {$this->_nick}");
+		$this->_user("{$this->_nick} {$this->_config['host']} botts :{$this->_nick}");
 	}
 
 	protected function _response() {
-		$line =  fgets($this->_resource, 128);
+		$line =	 fgets($this->_resource);
 
 		if (stripos($line, 'PING') !== false) {
 			list($ping, $pong) = $this->_parse(':', $line, 2);
-	        if (isset($pong)) {
-	            $this->_pong($pong);
-	        }
+			$this->_pong($pong);
 		} elseif ($line{0} === ':') {
 			$params = $this->_parse("\s:", $line, 5);
 
@@ -81,25 +79,28 @@ class Irc extends \lithium\console\Command {
 
 				$cmd = $params[2];
 				$msg = $params[4];
-				var_dump($cmd .':' . $msg);
+
+				$this->out($cmd);
+
 				switch ($cmd) {
 					case 'PRIVMSG':
 						$channel = $params[3];
 						$user = $this->_parse("!", $params[1], 3);
 						$this->_user = $user[0];
-						$this->out($msg);
 						if($msg = $this->_message($user[0], $msg)) {
 							$this->socket->write("PRIVMSG {$channel} :{$msg}\r\n");
 						}
 					break;
-					
+
+					case '461':
+					case '422':
 					case '376':
 						foreach ((array)$this->_channels as $channel) {
 							$this->_join($channel);
 							$this->out("{$this->_nick} joined {$channel}");
 						}
 					break;
-					
+
 					case '433': //Nick already registerd
 						$this->out($msg);
 						$this->_nick = $this->_nick . '_';
