@@ -13,7 +13,9 @@ class Log extends \lithium\core\StaticObject {
 	public static function save($data = null) {
 		$file = static::$path . date('Y-m-d');
 		$fp = !file_exists($file) ? fopen($file, 'x+') : fopen($file, 'a+');
-		return fwrite($fp, $data);
+		fwrite($fp, $data);
+		fclose($fp);
+		return $data;
 	}
 
 	public static function read($date) {
