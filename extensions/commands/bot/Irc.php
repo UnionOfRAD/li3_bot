@@ -26,7 +26,7 @@ class Irc extends \lithium\console\Command {
 			$key = "_{$key}";
 			if (isset($this->{$key})) {
 				$this->{$key} = $value;
-				if (strpos($value, ',')) {
+				if ($value && strpos($value, ',') !== false) {
 					$this->{$key} = explode(',', $value);
 				}
 			}
@@ -55,18 +55,15 @@ class Irc extends \lithium\console\Command {
 	public function __call($method, $params) {
 		if ($method[0] === '_') {
 			$value = empty($params) ? $this->{$method} : $params[0];
-			return $this->socket->write(strtoupper(ltrim($method, '_')) . " {$value} \r\n");
+			$command = strtoupper(ltrim($method, '_')) . " {$value} \r\n";
+			$this->out($command);
+			return $this->socket->write($command);
 		}
 	}
 
 	protected function _connect() {
 		$this->_nick();
 		$this->_user("{$this->_nick} {$this->_config['host']} botts : {$this->_nick}");
-		foreach ((array)$this->_channels as $channel) {
-			$this->_join($channel);
-			$this->out("{$this->_nick} joined {$channel}");
-		}
-		return true;
 	}
 
 	protected function _response() {
@@ -74,10 +71,8 @@ class Irc extends \lithium\console\Command {
 
 		if (stripos($line, 'PING') !== false) {
 			list($ping, $pong) = $this->_parse(':', $line, 2);
-	        $this->out($ping);
 	        if (isset($pong)) {
-				$this->out('PONG');
-	            $this->socket->write("PONG " . $pong);
+	            $this->_pong($pong);
 	        }
 		} elseif ($line{0} === ':') {
 			$params = $this->_parse("\s:", $line, 5);
@@ -86,7 +81,7 @@ class Irc extends \lithium\console\Command {
 
 				$cmd = $params[2];
 				$msg = $params[4];
-
+				var_dump($cmd .':' . $msg);
 				switch ($cmd) {
 					case 'PRIVMSG':
 						$channel = $params[3];
@@ -97,10 +92,18 @@ class Irc extends \lithium\console\Command {
 							$this->socket->write("PRIVMSG {$channel} :{$msg}\r\n");
 						}
 					break;
+					
+					case '376':
+						foreach ((array)$this->_channels as $channel) {
+							$this->_join($channel);
+							$this->out("{$this->_nick} joined {$channel}");
+						}
+					break;
+					
 					case '433': //Nick already registerd
 						$this->out($msg);
 						$this->_nick = $this->_nick . '_';
-						$this->join();
+						$this->_connect();
 					break;
 
 					case '353':
