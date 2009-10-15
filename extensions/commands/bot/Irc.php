@@ -20,11 +20,9 @@ class Irc extends \lithium\console\Command {
 
 	public function _init() {
 		parent::_init();
-		$this->_config += array('host' => 'localhost', 'port' => 6667);
-		$this->socket = new Stream($this->_config);
-
-		$settings = parse_ini_file(LITHIUM_APP_PATH . '/config/lithium_bot.ini');
-		foreach ($settings as $key => $value) {
+		$plugin = dirname(dirname(dirname(__DIR__)));
+		$this->_config += parse_ini_file($plugin . '/config/lithium_bot.ini');
+		foreach ($this->_config as $key => $value) {
 			$key = "_{$key}";
 			if (isset($this->{$key})) {
 				$this->{$key} = $value;
@@ -33,6 +31,7 @@ class Irc extends \lithium\console\Command {
 				}
 			}
 		}
+		$this->socket = new Stream($this->_config);
 	}
 
 	public function run() {
@@ -87,7 +86,7 @@ class Irc extends \lithium\console\Command {
 
 				$cmd = $params[2];
 				$msg = $params[4];
-				var_dump($cmd);
+
 				switch ($cmd) {
 					case 'PRIVMSG':
 						$channel = $params[3];
