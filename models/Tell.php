@@ -13,6 +13,7 @@ class Tell extends \lithium\core\StaticObject {
 	}
 
 	public static function save($data = array()) {
+		static::find('all');
 		$file = static::$path;
 		$fp = !file_exists($file) ? fopen($file, 'x+') : fopen($file, 'a+');
 		$result = false;
@@ -31,6 +32,9 @@ class Tell extends \lithium\core\StaticObject {
 
 	public static function find($type = 'first') {
 		if (empty(static::$_tells)) {
+			if (!file_exists(static::$path)) {
+				return array();
+			}
 			static::$_tells = parse_ini_file(static::$path);
 		}
 
@@ -48,6 +52,7 @@ class Tell extends \lithium\core\StaticObject {
 	}
 
 	public static function process($data) {
+		static::find('all');
 		$key = null;
 		extract($data);
 		if ($message[0] == '~') {

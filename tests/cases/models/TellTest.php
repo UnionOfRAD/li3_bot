@@ -77,6 +77,21 @@ class TellTest extends \lithium\test\Unit {
 		));
 		$this->assertEqual($expected, $result);
 	}
+	
+	public function testProcessSimpleTellWithSpaces() {
+		$expected = true;
+		$result = Tell::save(array('li' => 'the most rad php framework'));
+		$this->assertEqual($expected, $result);
+		
+		Tell::reset();
+		
+		$expected = 'gwoo, li is the most rad php framework';
+		$result = Tell::process(array(
+			'nick' => 'lithium', 'user' => 'gwoo',
+			'message' => '~li'
+		));
+		$this->assertEqual($expected, $result);
+	}
 
 }
 ?>
