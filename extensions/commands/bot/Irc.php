@@ -4,6 +4,7 @@ namespace lithium_bot\extensions\commands\bot;
 
 use \lithium\util\socket\Stream;
 
+use \lithium_bot\models\Tell;
 use \lithium_bot\models\Log;
 
 class Irc extends \lithium\console\Command {
@@ -48,7 +49,7 @@ class Irc extends \lithium\console\Command {
 		}
 
 		while($this->_run && !$this->socket->eof()) {
-			$this->_response();
+			$this->_process();
 		}
 	}
 
@@ -66,7 +67,7 @@ class Irc extends \lithium\console\Command {
 		$this->_user("{$this->_nick} {$this->_config['host']} botts :{$this->_nick}");
 	}
 
-	protected function _response() {
+	protected function _process() {
 		$line =	 fgets($this->_resource);
 
 		if (stripos($line, 'PING') !== false) {
@@ -86,9 +87,12 @@ class Irc extends \lithium\console\Command {
 					case 'PRIVMSG':
 						$channel = $params[3];
 						$user = $this->_parse("!", $params[1], 3);
-						$this->_user = $user[0];
-						if($msg = $this->_message($user[0], $msg)) {
-							$this->socket->write("PRIVMSG {$channel} :{$msg}\r\n");
+						$response = $this->_response(array(
+							'nick'=> $this->_nick, 'user' => $user[0],
+							'message' => $msg
+						));
+						if($response) {
+							$this->socket->write("PRIVMSG {$channel} :{$response}\r\n");
 						}
 					break;
 
@@ -126,8 +130,13 @@ class Irc extends \lithium\console\Command {
 		}
 	}
 
-	protected function _message($user, $msg) {
-		Log::save(date('H:i:s') . ": {$user}: {$msg}\n");
+	protected function _response($data) {
+		$tell = Tell::process($data);
+		$this->out($tell);
+		if ($tell) {
+			return $tell;
+		}
+		Log::save(date('H:i:s') . " : {$data['user']} : {$data['msg']}\n");
 	}
 
 	protected function _parse($regex, $string, $offset = -1) {
