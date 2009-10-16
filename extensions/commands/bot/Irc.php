@@ -136,7 +136,7 @@ class Irc extends \lithium\console\Command {
 		if ($tell) {
 			return $tell;
 		}
-		Log::save(date('H:i:s') . " : {$data['user']} : {$data['msg']}\n");
+		Log::save(date('H:i:s') . " : {$data['user']} : {$data['message']}\n");
 	}
 
 	protected function _parse($regex, $string, $offset = -1) {
