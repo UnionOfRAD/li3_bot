@@ -106,6 +106,7 @@ class TellTest extends \lithium\test\Unit {
 		$this->assertEqual($expected, $result);
 
 		Tell::reset();
+
 		$result = Tell::find('li');
 		$this->assertFalse($result);
 	}
