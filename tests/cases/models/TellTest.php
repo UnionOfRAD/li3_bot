@@ -5,11 +5,11 @@ namespace lithium_bot\tests\cases\models;
 use lithium_bot\models\Tell;
 
 class TellTest extends \lithium\test\Unit {
-	
+
 	public function setUp() {
 		Tell::$path = LITHIUM_APP_PATH . '/tmp/test_tells.txt';
 	}
-	
+
 	public function tearDown() {
 		Tell::reset();
 		if (file_exists(Tell::$path)) {
@@ -64,12 +64,12 @@ class TellTest extends \lithium\test\Unit {
 		));
 		$this->assertEqual($expected, $result);
 	}
-	
+
 	public function testProcessSimpleTell() {
 		$expected = true;
 		$result = Tell::save(array('li' => 'cool'));
 		$this->assertEqual($expected, $result);
-		
+
 		$expected = 'gwoo, li is cool';
 		$result = Tell::process(array(
 			'nick' => 'lithium', 'user' => 'gwoo',
@@ -77,20 +77,37 @@ class TellTest extends \lithium\test\Unit {
 		));
 		$this->assertEqual($expected, $result);
 	}
-	
+
 	public function testProcessSimpleTellWithSpaces() {
 		$expected = true;
 		$result = Tell::save(array('li' => 'the most rad php framework'));
 		$this->assertEqual($expected, $result);
-		
+
 		Tell::reset();
-		
+
 		$expected = 'gwoo, li is the most rad php framework';
 		$result = Tell::process(array(
 			'nick' => 'lithium', 'user' => 'gwoo',
 			'message' => '~li'
 		));
 		$this->assertEqual($expected, $result);
+	}
+
+	public function testSaveDeleteFind() {
+		$expected = true;
+		$result = Tell::save(array('li' => 'the most rad php framework'));
+		$this->assertEqual($expected, $result);
+
+		$expected = 'gwoo, li is the most rad php framework';
+		$result = Tell::process(array(
+			'nick' => 'lithium', 'user' => 'gwoo',
+			'message' => '~forget li'
+		));
+		$this->assertEqual($expected, $result);
+
+		Tell::reset();
+		$result = Tell::find('li');
+		$this->assertFalse($result);
 	}
 
 }
