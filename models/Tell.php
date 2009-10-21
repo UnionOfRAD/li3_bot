@@ -68,6 +68,7 @@ class Tell extends \lithium\core\StaticObject {
 					if (static::delete($words[1])) {
 						return "{$user}, I forgot about {$words[1]}";
 					}
+					return "{$user}, I never knew about {$words[1]}";
 				}
 			}
 			if (isset(static::$_tells[$key])) {
