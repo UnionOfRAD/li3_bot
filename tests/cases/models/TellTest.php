@@ -2,12 +2,12 @@
 
 namespace lithium_bot\tests\cases\models;
 
-use lithium_bot\models\Tell;
+use \lithium_bot\models\Tell;
 
 class TellTest extends \lithium\test\Unit {
 
 	public function setUp() {
-		Tell::$path = LITHIUM_APP_PATH . '/tmp/test_tells.txt';
+		Tell::$path = LITHIUM_APP_PATH . '/tmp/test_tells.ini';
 	}
 
 	public function tearDown() {
@@ -98,7 +98,7 @@ class TellTest extends \lithium\test\Unit {
 		$result = Tell::save(array('li' => 'the most rad php framework'));
 		$this->assertEqual($expected, $result);
 
-		$expected = 'gwoo, li is the most rad php framework';
+		$expected = 'gwoo, I forgot about li';
 		$result = Tell::process(array(
 			'nick' => 'lithium', 'user' => 'gwoo',
 			'message' => '~forget li'

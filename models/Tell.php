@@ -9,7 +9,7 @@ class Tell extends \lithium\core\StaticObject {
 	protected static $_tells = array();
 
 	public static function __init() {
-		static::$path = LITHIUM_APP_PATH . '/tmp/tells.txt';
+		static::$path = LITHIUM_APP_PATH . '/tmp/tells.ini';
 	}
 
 	public static function save($data = array()) {
@@ -17,11 +17,10 @@ class Tell extends \lithium\core\StaticObject {
 		$file = static::$path;
 		$fp = !file_exists($file) ? fopen($file, 'x+') : fopen($file, 'a+');
 		$result = false;
+		$data = array_diff($data, static::$_tells);
 		foreach ($data as $key => $value) {
-			if (!isset(static::$_tells[$key])) {
-				$result = fwrite($fp, "{$key}={$value}\n");
-				static::$_tells[$key] = $value;
-			}
+			$result = fwrite($fp, "{$key}={$value}\n");
+			static::$_tells[$key] = $value;
 		}
 		fclose($fp);
 		if ($result) {
@@ -65,6 +64,11 @@ class Tell extends \lithium\core\StaticObject {
 			} else {
 				$key = ltrim($words[0], '~');
 				$to = $user;
+				if ($key == 'forget') {
+					if (static::delete($words[1])) {
+						return "{$user}, I forgot about {$words[1]}";
+					}
+				}
 			}
 			if (isset(static::$_tells[$key])) {
 				$tell = static::$_tells[$key];
@@ -88,8 +92,27 @@ class Tell extends \lithium\core\StaticObject {
 		}
 	}
 
+	public static function delete($key) {
+		if (isset(static::$_tells[$key])) {
+			$tells = static::$_tells;
+			unset($tells[$key]);
+			static::reset();
+			unlink(static::$path);
+			static::save($tells);
+			return true;
+		}
+	}
+
 	public static function reset() {
 		static::$_tells = array();
+	}
+
+	public static function toIni($data) {
+		$result = array();
+		foreach ($data as $key => $value) {
+			$result[] = "{$key}={$value}";
+		}
+		return join("\n", $result);
 	}
 }
 
