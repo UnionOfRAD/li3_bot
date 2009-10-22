@@ -1,6 +1,6 @@
 <?php
 
-namespace lithium_bot\models;
+namespace li3_bot\models;
 
 class Tell extends \lithium\core\StaticObject {
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace lithium_bot\tests\cases\models;
+namespace li3_bot\tests\cases\models;
 
-use \lithium_bot\models\Tell;
+use \li3_bot\models\Tell;
 
 class TellTest extends \lithium\test\Unit {
 

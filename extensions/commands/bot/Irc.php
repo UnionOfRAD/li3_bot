@@ -1,11 +1,11 @@
 <?php
 
-namespace lithium_bot\extensions\commands\bot;
+namespace li3_bot\extensions\commands\bot;
 
 use \lithium\util\socket\Stream;
 
-use \lithium_bot\models\Tell;
-use \lithium_bot\models\Log;
+use \li3_bot\models\Tell;
+use \li3_bot\models\Log;
 
 class Irc extends \lithium\console\Command {
 
@@ -15,14 +15,14 @@ class Irc extends \lithium\console\Command {
 
 	protected $_resource = null;
 
-	protected $_nick = 'lithium_bot';
+	protected $_nick = 'li3_bot';
 
 	protected $_channels = array();
 
 	public function _init() {
 		parent::_init();
 		$plugin = dirname(dirname(dirname(__DIR__)));
-		$this->_config += parse_ini_file($plugin . '/config/lithium_bot.ini');
+		$this->_config += parse_ini_file($plugin . '/config/li3_bot.ini');
 		foreach ($this->_config as $key => $value) {
 			$key = "_{$key}";
 			if (isset($this->{$key})) {

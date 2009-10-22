@@ -1,8 +1,8 @@
 <?php
 
-namespace lithium_bot\controllers;
+namespace li3_bot\controllers;
 
-use \lithium_bot\models\Log;
+use \li3_bot\models\Log;
 
 class LogsController extends \lithium\action\Controller {
 	
