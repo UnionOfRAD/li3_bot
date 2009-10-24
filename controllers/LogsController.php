@@ -5,17 +5,18 @@ namespace li3_bot\controllers;
 use \li3_bot\models\Log;
 
 class LogsController extends \lithium\action\Controller {
-	
-	public function index() {
-		$logs = Log::all();
-		$this->set(compact('logs'));
-	}
-	
-	public function view($date = null) {
-		if (!$date) {
-			$date = date('Y-m-d');
+
+	public function index($channel = null) {
+		if (empty($channel)) {
+			$channels = Log::find('all');
+			return compact('channels');
 		}
-		$log = Log::read($date);
+		$logs = Log::find('all', compact('channel'));
+		return compact('channel', 'logs');
+	}
+
+	public function view($channel = null, $date = null) {
+		$log = Log::read('#' . $channel .'/' . $date);
 		$this->set(compact('log'));
 	}
 }

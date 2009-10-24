@@ -2,9 +2,10 @@
 
 use \lithium\http\Router;
 
-Router::connect('/bot', array('plugin' => 'li3_bot', 'controller' => 'logs'));
-Router::connect('/bot/{:library}/{:args}', array(
+Router::connect('/bot/view/{:args}', array(
 	'plugin' => 'li3_bot', 'controller' => 'logs', 'action' => 'view'
 ));
+Router::connect('/bot/{:args}', array('plugin' => 'li3_bot', 'controller' => 'logs'));
+
 
 ?>

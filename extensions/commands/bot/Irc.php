@@ -28,7 +28,7 @@ class Irc extends \lithium\console\Command {
 			if (isset($this->{$key})) {
 				$this->{$key} = $value;
 				if ($value && strpos($value, ',') !== false) {
-					$this->{$key} = explode(',', $value);
+					$this->{$key} = array_map('trim', explode(',', $value));
 				}
 			}
 		}
@@ -81,15 +81,15 @@ class Irc extends \lithium\console\Command {
 				$cmd = $params[2];
 				$msg = $params[4];
 
-				$this->out($cmd);
+				//$this->out($cmd);
 
 				switch ($cmd) {
 					case 'PRIVMSG':
 						$channel = $params[3];
 						$user = $this->_parse("!", $params[1], 3);
 						$response = $this->_response(array(
-							'nick'=> $this->_nick, 'user' => $user[0],
-							'message' => $msg
+							'channel' => $channel, 'nick'=> $this->_nick,
+							'user' => $user[0], 'message' => $msg
 						));
 						if($response) {
 							$this->socket->write("PRIVMSG {$channel} :{$response}\r\n");
@@ -136,7 +136,7 @@ class Irc extends \lithium\console\Command {
 		if ($tell) {
 			return $tell;
 		}
-		Log::save(date('H:i:s') . " : {$data['user']} : {$data['message']}\n");
+		Log::save($data);
 	}
 
 	protected function _parse($regex, $string, $offset = -1) {
