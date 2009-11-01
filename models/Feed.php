@@ -94,6 +94,9 @@ class Feed extends \lithium\core\StaticObject {
 				preg_match("/[a-zA-Z0-9]{0, 50}/", $description, $description);
 			}
 			$items[] = $item['author'] . " > " . $description . "... > " . $item['link'];
+			if (count($items) > 3) {
+				break;
+			}
 		}
 		return $items;
 	}
