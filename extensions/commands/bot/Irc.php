@@ -86,7 +86,7 @@ class Irc extends \lithium\console\Command {
 			list($ping, $pong) = $this->_parse(':', $line, 2);
 			$this->_pong($pong);
 			foreach ($this->_extensions['poll'] as $poll) {
-				$responses = $poll::poll($ping);
+				$responses = $poll::poll();
 				$this->_respond($this->_channels, $responses);
 			}
 			return true;

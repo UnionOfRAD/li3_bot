@@ -7,47 +7,81 @@ use \lithium\util\Set;
 
 class Feed extends \lithium\core\StaticObject {
 
-	protected static $_feed = array();
+	public static $path = null;
 
-	protected static $_date = array();
+	protected static $_data = array();
+
+	protected static $_dates = array();
 
 	protected static $_queue = array();
 
 	protected static $_firstPing = true;
 
-	public static function poll($ping = false) {
-	    return static::find('new', $ping);
+	protected static $_config = array();
+
+	public static function __init() {
+		$plugin = dirname(__DIR__);
+		static::$path = $plugin . '/config/li3_bot.ini';
 	}
 
-	public static function find($type = 'first', $ping = false) {
+	public static function config($config = array()) {
+		if (empty(static::$_config)) {
+			if (empty($config)) {
+				$config = parse_ini_file(static::$path, true);
+			}
+			static::$_config = $config;
+		}
+		return static::$_config;
+	}
+
+	public static function poll() {
+		$responses = array();
+		$config = static::config();
+		foreach ($config['feeds'] as $name => $path) {
+			$options = compact('name', 'path');
+			$responses = array_merge($responses, static::find('new', $options));
+		}
+		return $responses;
+	}
+
+	public static function find($type = 'first', $options = array()) {
+		$defaults = array('ping' => true, 'name' => null, 'path' => null);
+		$options += $defaults;
 
 		# bot seems to get flooded if we send messages on first ping/pong
-		if ($ping && static::$_firstPing) {
+		if ($options['ping'] && static::$_firstPing) {
 			static::$_firstPing = false;
 			return array();
 		}
 
-		# get feed, fix dates, store it
-		$feed = static::read('http://rad-dev.org/lithium/timeline.rss');
-		foreach ($feed['channel']['item'] as &$item) {
+		if (!$options['name'] || !$options['path']) {
+			return array();
+		}
+
+		$name = $options['name'];
+		$data = static::read($options['path']);
+		foreach ($data['channel']['item'] as &$item) {
 			$item['pubDate'] = strtotime($item['pubDate']);
 		}
-		static::$_feed = $feed;
+		static::$_data[$name] = $data;
 
 		# set date pointer to most recent
-		if (empty(static::$_date)) {
-			static::$_date = static::date() - 1; // hack to have bot instantly show first feed entry
+		if (empty(static::$_dates[$name])) {
+			static::$_dates[$name] = static::_date($name) - 1; // hack to have bot instantly show first feed entry
 		}
 
 		# find type to show new entries since last check
 		if ($type === 'new') {
-			$items = Set::extract('/channel/item[pubDate>' . static::$_date . ']', static::$_feed);
-			static::$_date = static::date();
+			$items = Set::extract(
+				'/channel/item[pubDate>' . static::$_dates[$name] . ']',
+				static::$_data[$name]
+			);
+			static::_date($name);
 		}
 
 		# if triggered by user, tell them there is nothing to say
-		if (!count($items) && !$ping) {
-			return array('Nothing new has happened');
+		if (!count($items) && !$options['ping']) {
+			return array('get back to work');
 		}
 
 		# format the feed items for output
@@ -67,9 +101,18 @@ class Feed extends \lithium\core\StaticObject {
 		return $xml;
 	}
 
-	protected static function date() {
-		$date = Set::extract('/channel/item[1]/pubDate', static::$_feed);
-		return array_shift($date);
+	public static function reset() {
+		static::$_data = array();
+		static::$_dates = array();
+		static::$_queue = array();
+		static::$_firstPing = true;
+		static::$_config = array();
+	}
+
+	protected static function _date($name) {
+		$date = Set::extract('/channel/item[1]/pubDate', static::$_data[$name]);
+		static::$_dates[$name] = array_shift($date);
+		return static::$_dates[$name];
 	}
 }
 ?>
