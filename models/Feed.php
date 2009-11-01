@@ -48,7 +48,6 @@ class Feed extends \lithium\core\StaticObject {
 		$defaults = array('ping' => true, 'name' => null, 'path' => null);
 		$options += $defaults;
 
-		# bot seems to get flooded if we send messages on first ping/pong
 		if ($options['ping'] && static::$_firstPing) {
 			static::$_firstPing = false;
 			return array();
@@ -65,17 +64,18 @@ class Feed extends \lithium\core\StaticObject {
 		}
 		static::$_data[$name] = $data;
 
-		# set date pointer to most recent
 		if (empty(static::$_dates[$name])) {
 			static::_date($name);
 		}
 
-		# find type to show new entries since last check
 		if ($type === 'new') {
 			$items = Set::extract(
 				'/channel/item[pubDate>' . static::$_dates[$name] . ']',
 				static::$_data[$name]
 			);
+			if (empty($items)) {
+				$items = array(array('item' => static::$_data[$name]['channel']['item'][1]));
+			}
 			static::_date($name);
 		}
 
@@ -84,21 +84,23 @@ class Feed extends \lithium\core\StaticObject {
 			return array('get back to work');
 		}
 
-		if (empty(static::$_data[$name]['channel']['item'])) {
+		if (empty($items)) {
 			return array();
 		}
-		$items = array();
-		foreach (static::$_data[$name]['channel']['item'] as $item) {
-			$description = strip_tags($item['description']);
+
+		$result = array();
+		foreach ($items as $item) {
+			$description = strip_tags($item['item']['description']);
 			if (strlen($description) > 50) {
-				preg_match("/[a-zA-Z0-9]{0, 50}/", $description, $description);
+				$description = substr($strString, 0, 50);
 			}
-			$items[] = $item['author'] . " > " . $description . "... > " . $item['link'];
+			$result[] = $item['item']['author'] . " > "
+				. $description . "... > " . $item['item']['link'];
 			if (count($items) > 3) {
 				break;
 			}
 		}
-		return $items;
+		return $result;
 	}
 
 	/**
