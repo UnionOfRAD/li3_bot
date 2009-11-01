@@ -3,21 +3,23 @@
 namespace li3_bot\extensions\commands\bot;
 
 use \lithium\util\socket\Stream;
-
-use \li3_bot\models\Tell;
-use \li3_bot\models\Log;
+use \lithium\core\Libraries;
 
 class Irc extends \lithium\console\Command {
 
 	public $socket = null;
 
-	protected $_run= false;
+	protected $_running = false;
 
 	protected $_resource = null;
 
 	protected $_nick = 'li3_bot';
 
 	protected $_channels = array();
+
+	protected $_joined = array();
+
+	protected $_extensions = array('poll' => array(), 'process' => array());
 
 	public function _init() {
 		parent::_init();
@@ -33,22 +35,32 @@ class Irc extends \lithium\console\Command {
 			}
 		}
 		$this->socket = new Stream($this->_config);
+
+		$classes = Libraries::locate('models');
+		foreach ($classes as $class) {
+			if (method_exists($class, 'poll')) {
+				$this->_extensions['poll'][] = $class;
+			}
+			if (method_exists($class, 'process')) {
+				$this->_extensions['process'][] = $class;
+			}
+		}
 	}
 
 	public function run() {
 		try {
-			$this->_run = (bool) $this->socket->open();
+			$this->_running = (bool) $this->socket->open();
 			$this->_resource = $this->socket->resource();
 		} catch (Exception $e) {
 			$this->out($e);
 		}
 
-		if ($this->_run) {
+		if ($this->_running) {
 			$this->out('connected');
 			$this->_connect();
 		}
 
-		while($this->_run && !$this->socket->eof()) {
+		while($this->_running && !$this->socket->eof()) {
 			$this->_process();
 		}
 	}
@@ -73,7 +85,14 @@ class Irc extends \lithium\console\Command {
 		if (stripos($line, 'PING') !== false) {
 			list($ping, $pong) = $this->_parse(':', $line, 2);
 			$this->_pong($pong);
-		} elseif ($line{0} === ':') {
+			foreach ($this->_extensions['poll'] as $poll) {
+				$responses = $poll::poll($ping);
+				$this->_respond($responses);
+			}
+			return true;
+		}
+
+		if ($line{0} === ':') {
 			$params = $this->_parse("\s:", $line, 5);
 
 			if (isset($params[2])) {
@@ -87,12 +106,13 @@ class Irc extends \lithium\console\Command {
 					case 'PRIVMSG':
 						$channel = $params[3];
 						$user = $this->_parse("!", $params[1], 3);
-						$response = $this->_response(array(
+						$data = array(
 							'channel' => $channel, 'nick'=> $this->_nick,
 							'user' => $user[0], 'message' => $msg
-						));
-						if($response) {
-							$this->socket->write("PRIVMSG {$channel} :{$response}\r\n");
+						);
+						foreach ($this->_extensions['process'] as $process) {
+							$responses = $process::process($data);
+							$this->_respond($responses);
 						}
 					break;
 
@@ -100,8 +120,11 @@ class Irc extends \lithium\console\Command {
 					case '422':
 					case '376':
 						foreach ((array)$this->_channels as $channel) {
-							$this->_join($channel);
-							$this->out("{$this->_nick} joined {$channel}");
+							if (empty($this->_joined[$channel])) {
+								$this->_join($channel);
+								$this->out("{$this->_nick} joined {$channel}");
+								$this->_joined[$channel] = true;
+							}
 						}
 					break;
 
@@ -120,23 +143,19 @@ class Irc extends \lithium\console\Command {
 					break;
 				}
 			}
-		} else {
-			$this->out($line);
-			/*
-			while($cmd = $this->in('enter an irc command')) {
-				// /$this->write($cmd);
-			}
-			*/
 		}
 	}
 
-	protected function _response($data) {
-		$tell = Tell::process($data);
-		$this->out($tell);
-		if ($tell) {
-			return $tell;
+	protected function _respond($responses) {
+		if (empty($responses)) {
+			return;
 		}
-		Log::save($data);
+		foreach ((array)$this->_channels as $channel) {
+    	    $this->out('Sending ' . count($responses) . ' messages to ' . $channel);
+			foreach ((array)$responses as $response) {
+				$this->_privmsg("{$channel} :{$response}");
+			}
+		}
 	}
 
 	protected function _parse($regex, $string, $offset = -1) {

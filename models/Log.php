@@ -11,6 +11,10 @@ class Log extends \lithium\core\StaticObject {
 	public static function __init() {
 		static::$path = LITHIUM_APP_PATH . '/tmp/logs/';
 	}
+	
+	public static function process($data) {
+		static::save($data);
+	}
 
 	public static function save($data = null) {
 		$file = static::$path . $data['channel'] . '/' . date('Y-m-d');

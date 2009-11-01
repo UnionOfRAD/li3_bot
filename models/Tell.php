@@ -79,6 +79,12 @@ class Tell extends \lithium\core\StaticObject {
 		}
 		if (stripos($message, $nick) !== false) {
 			$words = preg_split("/[\s]/", $message, 4);
+			if ($words[1] == 'forget') {
+				if (static::delete($words[2])) {
+					return "{$user}, I forgot about {$words[2]}";
+				}
+				return "{$user}, I never knew about {$words[2]}";
+			}
 			if (!empty($words[2]) && $words[2] == 'is') {
 				if (isset(static::$_tells[$words[1]])) {
 					$tell = static::$_tells[$words[1]];
@@ -89,7 +95,6 @@ class Tell extends \lithium\core\StaticObject {
 					}
 				}
 			}
-			return $words;
 		}
 	}
 
