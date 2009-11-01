@@ -93,7 +93,7 @@ class Feed extends \lithium\core\StaticObject {
 		foreach ($items as $item) {
 			$description = strip_tags($item['item']['description']);
 			if (strlen($description) > 50) {
-				$description = substr($strString, 0, 50);
+				$description = substr($description, 0, 50);
 			}
 			$result[] = $item['item']['author'] . " > "
 				. $description . "... > " . $item['item']['link'];
