@@ -87,7 +87,7 @@ class Irc extends \lithium\console\Command {
 			$this->_pong($pong);
 			foreach ($this->_extensions['poll'] as $poll) {
 				$responses = $poll::poll($ping);
-				$this->_respond($responses);
+				$this->_respond($this->_channels, $responses);
 			}
 			return true;
 		}
@@ -112,7 +112,7 @@ class Irc extends \lithium\console\Command {
 						);
 						foreach ($this->_extensions['process'] as $process) {
 							$responses = $process::process($data);
-							$this->_respond($responses);
+							$this->_respond($channel, $responses);
 						}
 					break;
 
@@ -146,12 +146,12 @@ class Irc extends \lithium\console\Command {
 		}
 	}
 
-	protected function _respond($responses) {
+	protected function _respond($channels, $responses) {
 		if (empty($responses)) {
 			return;
 		}
-		foreach ((array)$this->_channels as $channel) {
-    	    $this->out('Sending ' . count($responses) . ' messages to ' . $channel);
+		foreach ((array)$channels as $channel) {
+			$this->out('Sending ' . count($responses) . ' messages to ' . $channel);
 			foreach ((array)$responses as $response) {
 				$this->_privmsg("{$channel} :{$response}");
 			}
