@@ -67,7 +67,7 @@ class Feed extends \lithium\core\StaticObject {
 
 		# set date pointer to most recent
 		if (empty(static::$_dates[$name])) {
-			static::$_dates[$name] = static::_date($name) - 1; // hack to have bot instantly show first feed entry
+			static::_date($name);
 		}
 
 		# find type to show new entries since last check
@@ -84,11 +84,17 @@ class Feed extends \lithium\core\StaticObject {
 			return array('get back to work');
 		}
 
-		# format the feed items for output
-		$items = Set::format($items, '{0} > {1}: {2}', array(
-			'/item/author', '/item/title', '/item/link'
-		));
-
+		if (empty(static::$_data[$name]['channel']['item'])) {
+			return array();
+		}
+		$items = array();
+		foreach (static::$_data[$name]['channel']['item'] as $item) {
+			$description = strip_tags($item['description']);
+			if (strlen($description) > 50) {
+				preg_match("/[a-zA-Z0-9]{0, 50}/", $description, $description);
+			}
+			$items[] = $item['author'] . " > " . $description . "... > " . $item['link'];
+		}
 		return $items;
 	}
 
