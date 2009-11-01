@@ -73,9 +73,10 @@ class Feed extends \lithium\core\StaticObject {
 				'/channel/item[pubDate>' . static::$_dates[$name] . ']',
 				static::$_data[$name]
 			);
-			if (empty($items)) {
-				$items = array(array('item' => static::$_data[$name]['channel']['item'][1]));
-			}
+			//could enable this to get first enable when bot joins
+			// if (empty($items) && static::$_firstPing) {
+			// 	$items = array(array('item' => static::$_data[$name]['channel']['item'][1]));
+			// }
 			static::_date($name);
 		}
 
