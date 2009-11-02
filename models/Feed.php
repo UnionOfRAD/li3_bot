@@ -91,7 +91,7 @@ class Feed extends \lithium\core\StaticObject {
 
 		$result = array();
 		foreach ($items as $item) {
-			$description = strip_tags($item['item']['description']);
+			$description = str_replace("#", "", strip_tags($item['item']['description']));
 			if (strlen($description) > 50) {
 				$description = substr($description, 0, 50);
 			}
