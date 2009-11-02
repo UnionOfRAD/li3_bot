@@ -2,7 +2,7 @@
 
 namespace li3_bot\models;
 
-//use \lithium\data\Http;
+use \lithium\util\String;
 use \lithium\util\Set;
 
 class Feed extends \lithium\core\StaticObject {
@@ -66,6 +66,7 @@ class Feed extends \lithium\core\StaticObject {
 
 		if (empty(static::$_dates[$name])) {
 			static::_date($name);
+			//static::$_dates[$name] = static::$_dates[$name] - 1; // uncomment to test first ping
 		}
 
 		if ($type === 'new') {
@@ -73,10 +74,6 @@ class Feed extends \lithium\core\StaticObject {
 				'/channel/item[pubDate>' . static::$_dates[$name] . ']',
 				static::$_data[$name]
 			);
-			//could enable this to get first enable when bot joins
-			// if (empty($items) && static::$_firstPing) {
-			// 	$items = array(array('item' => static::$_data[$name]['channel']['item'][1]));
-			// }
 			static::_date($name);
 		}
 
@@ -90,14 +87,23 @@ class Feed extends \lithium\core\StaticObject {
 		}
 
 		$result = array();
+		$replace = array("#", "\r\n", "\n");
+		$ments = array("", ": ", ": ");
 		foreach ($items as $item) {
-			$description = str_replace("#", "", strip_tags($item['item']['description']));
+			$description = str_replace($replace, $ments, strip_tags($item['item']['description']));
 			if (strlen($description) > 50) {
 				$description = substr($description, 0, 50);
 			}
-			$result[] = $item['item']['author'] . " > "
-				. $description . "... > " . $item['item']['link'];
-			if (count($items) > 3) {
+			$format = "\x02{:name}\x02 \x0311∆\x03 {:description} \x036∆\x03 \x02{:author}"
+				. "\x02 \x0313∆\x03 {:link}";
+			$result[] = String::insert($format, array(
+				'name' => $name,
+				'author' => $item['item']['author'],
+				'description' => $description,
+				'link' => $item['item']['link'],
+			));
+
+			if (count($result) > 3) {
 				break;
 			}
 		}
