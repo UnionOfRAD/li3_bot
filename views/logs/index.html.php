@@ -1,20 +1,13 @@
 <ul>
-	<?php
-		if (!empty($channels)){
-			foreach ($channels as $channel) {?>
-				<li><a href="/bot/<?php echo $channel; ?>"><?php echo $channel; ?></a></li>
-	<?php 	}
-		}?>
+	<?php foreach ((array)$channels as $channel): ?>
+		<li><a href="/bot/<?=$channel; ?>"><?=$channel; ?></a></li>
+	<?php endforeach;?>
 
-	<?php
-		if (!empty($logs)){
-			foreach ($logs as $date) {
-			 if (!preg_match("/(.*?)-(.*?)-(.*?)/", $date)) continue; ?>
-				<li>
-					<a href="/bot/view/<?php echo $channel; ?>/<?php echo $date; ?>">
-						<?php echo $date; ?>
-					</a>
-				</li>
-	<?php 	}
-		}?>
+	<?php foreach ((array)$logs as $date): ?>
+		<li>
+			<a href="/bot/view/<?=$channel; ?>/<?=$date; ?>">
+				<?=$date; ?>
+			</a>
+		</li>
+	<?php endforeach;?>
 </ul>

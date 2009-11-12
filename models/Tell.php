@@ -9,6 +9,7 @@ class Tell extends \lithium\core\StaticObject {
 	protected static $_tells = array();
 
 	public static function __init() {
+		parent::__init();
 		static::$path = LITHIUM_APP_PATH . '/tmp/tells.ini';
 	}
 
@@ -19,7 +20,7 @@ class Tell extends \lithium\core\StaticObject {
 		$result = false;
 		$data = array_diff($data, static::$_tells);
 		foreach ($data as $key => $value) {
-			$result = fwrite($fp, "{$key}={$value}\n");
+			$result = fwrite($fp, "{$key}=\"{$value}\"\n");
 			static::$_tells[$key] = $value;
 		}
 		fclose($fp);
@@ -47,54 +48,6 @@ class Tell extends \lithium\core\StaticObject {
 
 		if (isset(static::$_tells[$type])) {
 			return static::$_tells[$type];
-		}
-	}
-
-	public static function process($data) {
-		static::find('all');
-		$key = null;
-		extract($data);
-		if ($message[0] == '~') {
-			$words = preg_split("/[\s]/", $message, 4);
-			if ($words[0] == '~tell') {
-				if ($words[2] == 'about') {
-					$key = $words[3];
-					$to = $words[1];
-				}
-			} else {
-				$key = ltrim($words[0], '~');
-				$to = $user;
-				if ($key == 'forget') {
-					if (static::delete($words[1])) {
-						return "{$user}, I forgot about {$words[1]}";
-					}
-					return "{$user}, I never knew about {$words[1]}";
-				}
-			}
-			if (isset(static::$_tells[$key])) {
-				$tell = static::$_tells[$key];
-				return "{$to}, {$key} is {$tell}";
-			}
-			return "{$user}, I do not know about {$key}";
-		}
-		if (stripos($message, $nick) !== false) {
-			$words = preg_split("/[\s]/", $message, 4);
-			if ($words[1] == 'forget') {
-				if (static::delete($words[2])) {
-					return "{$user}, I forgot about {$words[2]}";
-				}
-				return "{$user}, I never knew about {$words[2]}";
-			}
-			if (!empty($words[2]) && $words[2] == 'is') {
-				if (isset(static::$_tells[$words[1]])) {
-					$tell = static::$_tells[$words[1]];
-					return "{$user}, I thought {$words[1]} was {$tell}";
-				} else {
-					if (static::save(array($words[1] => $words[3]))) {
-						return "{$user}, I will remember {$words[1]}";
-					}
-				}
-			}
 		}
 	}
 

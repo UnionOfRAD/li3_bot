@@ -9,6 +9,8 @@ class Feed extends \lithium\core\StaticObject {
 
 	public static $path = null;
 
+	public static $format;
+
 	protected static $_data = array();
 
 	protected static $_dates = array();
@@ -22,26 +24,17 @@ class Feed extends \lithium\core\StaticObject {
 	public static function __init() {
 		$plugin = dirname(__DIR__);
 		static::$path = $plugin . '/config/li3_bot.ini';
+		static::$format = join(' ', array(
+			"\x02{:name}\x02", "\x0311∆\x03", "{:description}", "\x036∆\x03",
+			"\x02{:author}\x02", "\x0313∆\x03", "{:link}"
+		));
 	}
 
-	public static function config($config = array()) {
+	public static function config() {
 		if (empty(static::$_config)) {
-			if (empty($config)) {
-				$config = parse_ini_file(static::$path, true);
-			}
-			static::$_config = $config;
+			static::$_config = parse_ini_file(static::$path, true);
 		}
 		return static::$_config;
-	}
-
-	public static function poll() {
-		$responses = array();
-		$config = static::config();
-		foreach ($config['feeds'] as $name => $path) {
-			$options = compact('name', 'path');
-			$responses = array_merge($responses, static::find('new', $options));
-		}
-		return $responses;
 	}
 
 	public static function find($type = 'first', $options = array()) {
@@ -53,26 +46,38 @@ class Feed extends \lithium\core\StaticObject {
 			return array();
 		}
 
-		if (!$options['name'] || !$options['path']) {
+		if (empty($options['name'])) {
+			return array();
+		}
+
+		if (empty($options['path']) && !empty(static::$_config['feeds'][$options['name']])) {
+			$options['path'] = static::$_config['feeds'][$options['name']];
+		}
+
+		if (empty($options['path'])) {
 			return array();
 		}
 
 		$name = $options['name'];
 		$data = static::read($options['path']);
+
+		if (empty($data['channel']['item'])) {
+			return array();
+		}
 		foreach ($data['channel']['item'] as &$item) {
 			$item['pubDate'] = strtotime($item['pubDate']);
 		}
 		static::$_data[$name] = $data;
+		$items = Set::extract('/channel/item', $data);
 
 		if (empty(static::$_dates[$name])) {
 			static::_date($name);
-			//static::$_dates[$name] = static::$_dates[$name] - 1; // uncomment to test first ping
+			static::$_dates[$name] = static::$_dates[$name] - 1; // uncomment to test first ping
 		}
 
 		if ($type === 'new') {
 			$items = Set::extract(
-				'/channel/item[pubDate>' . static::$_dates[$name] . ']',
-				static::$_data[$name]
+				'/channel/item[pubDate>' . static::$_dates[$name] . ']', $data
 			);
 			static::_date($name);
 		}
@@ -94,9 +99,7 @@ class Feed extends \lithium\core\StaticObject {
 			if (strlen($description) > 50) {
 				$description = substr($description, 0, 50);
 			}
-			$format = "\x02{:name}\x02 \x0311∆\x03 {:description} \x036∆\x03 \x02{:author}"
-				. "\x02 \x0313∆\x03 {:link}";
-			$result[] = String::insert($format, array(
+			$result[] = String::insert(static::$format, array(
 				'name' => $name,
 				'author' => $item['item']['author'],
 				'description' => $description,
@@ -114,7 +117,7 @@ class Feed extends \lithium\core\StaticObject {
 	* @todo datasource
 	*/
 	public static function read($url) {
-		$xml = simplexml_load_file($url);
+		$xml = @simplexml_load_file($url);
 		$xml = Set::reverse($xml);
 		return $xml;
 	}

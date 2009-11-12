@@ -1,10 +1,10 @@
 <html>
 <head>
-	<title><?=$this->title(); ?></title>
-	<?=@$this->scripts(); ?>
+	<title><?php echo $this->title(); ?></title>
+	<?php echo $this->scripts(); ?>
 </head>
 <body>
 	<h1>Lithium Bot</h1>
-	<?=@$this->content(); ?>
+	<?php echo $this->content(); ?>
 </body>
 </html>

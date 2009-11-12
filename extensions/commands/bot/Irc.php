@@ -19,7 +19,7 @@ class Irc extends \lithium\console\Command {
 
 	protected $_joined = array();
 
-	protected $_extensions = array('poll' => array(), 'process' => array());
+	protected $_plugins = array('poll' => array(), 'process' => array());
 
 	public function _init() {
 		parent::_init();
@@ -36,13 +36,14 @@ class Irc extends \lithium\console\Command {
 		}
 		$this->socket = new Stream($this->_config);
 
-		$classes = Libraries::locate('models');
+		$classes = Libraries::locate('commands.bot.plugins');
+
 		foreach ($classes as $class) {
 			if (method_exists($class, 'poll')) {
-				$this->_extensions['poll'][] = $class;
+				$this->_plugins['poll'][] = new $class($this->_config);
 			}
 			if (method_exists($class, 'process')) {
-				$this->_extensions['process'][] = $class;
+				$this->_plugins['process'][] = new $class($this->_config);
 			}
 		}
 	}
@@ -85,8 +86,8 @@ class Irc extends \lithium\console\Command {
 		if (stripos($line, 'PING') !== false) {
 			list($ping, $pong) = $this->_parse(':', $line, 2);
 			$this->_pong($pong);
-			foreach ($this->_extensions['poll'] as $poll) {
-				$responses = $poll::poll();
+			foreach ($this->_plugins['poll'] as $class) {
+				$responses = $class->poll();
 				$this->_respond($this->_channels, $responses);
 			}
 			return true;
@@ -110,8 +111,8 @@ class Irc extends \lithium\console\Command {
 							'channel' => $channel, 'nick'=> $this->_nick,
 							'user' => $user[0], 'message' => $msg
 						);
-						foreach ($this->_extensions['process'] as $process) {
-							$responses = $process::process($data);
+						foreach ($this->_plugins['process'] as $class) {
+							$responses = $class->process($data);
 							$this->_respond($channel, $responses);
 						}
 					break;
@@ -162,5 +163,4 @@ class Irc extends \lithium\console\Command {
 		return str_replace(array("\r\n", "\n"), '', preg_split("/[{$regex}]+/", $string, $offset));
 	}
 }
-
 ?>

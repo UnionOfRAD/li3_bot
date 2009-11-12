@@ -2,7 +2,12 @@
 
 namespace li3_bot\tests\cases\models;
 
-use \li3_bot\models\Feed;
+class MockFeed extends \li3_bot\models\Feed {
+
+	protected static $_config = array('feeds' => array(
+		'lithium' => 'http://rad-dev.org/lithium/timeline.rss'
+	));
+}
 
 class FeedTest extends \lithium\test\Unit {
 
@@ -10,18 +15,21 @@ class FeedTest extends \lithium\test\Unit {
 	}
 
 	public function tearDown() {
-		Feed::reset();
+		MockFeed::reset();
 	}
 
-	public function testPoll() {
+	public function testFind() {
 		$expected = array();
-		$result = Feed::poll(true);
+		$result = MockFeed::find('first');
 		$this->assertEqual($expected, $result);
 
-		$expected = array();
-		$result = Feed::poll(true);
-		$this->assertNotEqual($expected, $result);
+		$expected = 1;
+		$result = MockFeed::find('new', array('ping' => false, 'name' => 'lithium'));
+		$this->assertEqual($expected, count($result));
 
+		$expected = 4;
+		$result = MockFeed::find('all', array('name' => 'lithium'));
+		$this->assertEqual($expected, count($result));
 	}
 
 }

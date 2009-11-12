@@ -11,10 +11,6 @@ class Log extends \lithium\core\StaticObject {
 	public static function __init() {
 		static::$path = LITHIUM_APP_PATH . '/tmp/logs/';
 	}
-	
-	public static function process($data) {
-		static::save($data);
-	}
 
 	public static function save($data = null) {
 		$file = static::$path . $data['channel'] . '/' . date('Y-m-d');
@@ -38,7 +34,13 @@ class Log extends \lithium\core\StaticObject {
 	public static function find($type, $options = array()) {
 
 		if (!empty($options['channel'])) {
-			return scandir(static::$path . '#' . $options['channel']);
+			$path = static::$path . '#' . $options['channel'];
+			return array_values(array_filter(scandir($path), function ($file) {
+				if ($file[0] == '.') {
+					return false;
+				}
+				return true;
+			}));
 		}
 
 		$directory = new DirectoryIterator(static::$path);
