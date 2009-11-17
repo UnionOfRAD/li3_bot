@@ -47,63 +47,12 @@ class TellTest extends \lithium\test\Unit {
 		$this->assertEqual($expected, $result);
 	}
 
-	public function testProcessAdd() {
-		$expected = 'gwoo, I will remember li';
-		$result = Tell::process(array(
-			'nick' => 'lithium', 'user' => 'gwoo',
-			'message' => 'lithium: li is cool'
-		));
-		$this->assertEqual($expected, $result);
-	}
-
-	public function testProcessNoTell() {
-		$expected = 'gwoo, I do not know about li';
-		$result = Tell::process(array(
-			'nick' => 'lithium', 'user' => 'gwoo',
-			'message' => '~tell bob about li'
-		));
-		$this->assertEqual($expected, $result);
-	}
-
-	public function testProcessSimpleTell() {
-		$expected = true;
-		$result = Tell::save(array('li' => 'cool'));
-		$this->assertEqual($expected, $result);
-
-		$expected = 'gwoo, li is cool';
-		$result = Tell::process(array(
-			'nick' => 'lithium', 'user' => 'gwoo',
-			'message' => '~li'
-		));
-		$this->assertEqual($expected, $result);
-	}
-
-	public function testProcessSimpleTellWithSpaces() {
-		$expected = true;
-		$result = Tell::save(array('li' => 'the most rad php framework'));
-		$this->assertEqual($expected, $result);
-
-		Tell::reset();
-
-		$expected = 'gwoo, li is the most rad php framework';
-		$result = Tell::process(array(
-			'nick' => 'lithium', 'user' => 'gwoo',
-			'message' => '~li'
-		));
-		$this->assertEqual($expected, $result);
-	}
-
 	public function testSaveDeleteFind() {
 		$expected = true;
 		$result = Tell::save(array('li' => 'the most rad php framework'));
 		$this->assertEqual($expected, $result);
 
-		$expected = 'gwoo, I forgot about li';
-		$result = Tell::process(array(
-			'nick' => 'lithium', 'user' => 'gwoo',
-			'message' => '~forget li'
-		));
-		$this->assertEqual($expected, $result);
+		Tell::delete('li');
 
 		Tell::reset();
 

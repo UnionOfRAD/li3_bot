@@ -62,7 +62,6 @@ class TellTest extends \lithium\test\Unit {
 		 	'user' => 'gwoo', 'message' => '~lithium'
 		));
 		$this->assertEqual($expected, $result);
-
 	}
 }
 
