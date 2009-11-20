@@ -13,12 +13,16 @@ class LogsController extends \lithium\action\Controller {
 			return compact('channels', 'logs');
 		}
 		$logs = Log::find('all', compact('channel'));
+		natsort($logs);
+		$logs = array_reverse($logs); //Logs should show up in reverse chronological order
+
 		return compact('channels', 'channel', 'logs');
 	}
 
 	public function view($channel = null, $date = null) {
 		$log = Log::read("#{$channel}/{$date}");
-		$this->set(compact('log'));
+		$log = array_reverse($log);
+		$this->set(compact('log', 'channel', 'date'));
 	}
 }
 

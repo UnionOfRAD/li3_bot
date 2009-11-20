@@ -7,9 +7,11 @@ use \DirectoryIterator;
 class Log extends \lithium\core\StaticObject {
 
 	public static $path = null;
+	protected static $_pattern = null;
 
 	public static function __init() {
 		static::$path = LITHIUM_APP_PATH . '/tmp/logs/';
+		static::$_pattern = '/^(?P<time>\d+:\d+(:\d+)?) : (?P<user>[^\s]+) : (?P<message>.*)/';
 	}
 
 	public static function save($data = null) {
@@ -28,7 +30,18 @@ class Log extends \lithium\core\StaticObject {
 	}
 
 	public static function read($date) {
-		return file_get_contents(static::$path . $date);
+		$fp = fopen(static::$path . $date, 'r+');
+		$log = array();
+
+		while (!feof($fp)) {
+			$line = fgets($fp);
+			if (preg_match(static::$_pattern, $line, $matches)) {
+				$log[] = $matches;
+			}
+		}
+
+		fclose($fp);
+		return $log;
 	}
 
 	public static function find($type, $options = array()) {
