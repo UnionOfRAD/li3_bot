@@ -5,24 +5,47 @@ namespace li3_bot\controllers;
 use \li3_bot\models\Log;
 
 class LogsController extends \lithium\action\Controller {
-
 	public function index($channel = null) {
-		$channels = $logs = null;
-		if (empty($channel)) {
-			$channels = Log::find('all');
-			return compact('channels', 'logs');
-		}
-		$logs = Log::find('all', compact('channel'));
-		natsort($logs);
-		$logs = array_reverse($logs); //Logs should show up in reverse chronological order
+		$channels = Log::find('all');
+		$breadcrumbs = array('bot' => 'Channels');
+		$logs = null;
 
-		return compact('channels', 'channel', 'logs');
+		if ($channel) {
+			$breadcrumbs['#'] = '#'.$channel;
+			$logs = Log::find('all', compact('channel'));
+
+			natsort($logs);
+			$logs = array_reverse($logs);
+		}
+
+		return compact('channels', 'channel', 'logs', 'breadcrumbs');
 	}
 
-	public function view($channel = null, $date = null) {
-		$log = Log::read("#{$channel}/{$date}");
-		$log = array_reverse($log);
-		$this->set(compact('log', 'channel', 'date'));
+	public function view($channel, $date = null) {
+		if (is_null($date)) {
+			return $this->index($channel);
+		}
+		$breadcrumbs = array('bot' => 'Channels');
+		$breadcrumbs['bot/'.$channel] = '#'.$channel;
+		$breadcrumbs['#'] = $date;
+
+		$channels = Log::find('all');
+		$log = Log::read($channel, $date);
+		$previous = date('Y-m-d', strtotime($date) - (60 * 60 * 24));
+		$next = date('Y-m-d', strtotime($date) + (60 * 60 * 24));
+
+		if ($log) {
+			$log = array_reverse($log);
+		}
+
+		if (!Log::exists($channel, $previous)) {
+			$previous = null;
+		}
+		if (!Log::exists($channel, $next)) {
+			$next = null;
+		}
+
+		return compact('channels', 'channel', 'log', 'date', 'breadcrumbs', 'previous', 'next');
 	}
 }
 

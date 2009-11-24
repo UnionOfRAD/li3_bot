@@ -15,26 +15,36 @@ class Log extends \lithium\core\StaticObject {
 	}
 
 	public static function save($data = null) {
-		$file = static::$path . $data['channel'] . '/' . date('Y-m-d');
-		if (!is_dir(static::$path . $data['channel'])) {
-			mkdir(static::$path . $data['channel']);
+		$dir = static::path($data['channel']);
+		$path = static::path($data['channel'], date('Y-m-d'));
+		if (!is_dir($dir)) {
+			mkdir($dir);
 		}
-		$fp = !file_exists($file) ? fopen($file, 'x+') : fopen($file, 'a+');
+
+		$fp = !file_exists($path) ? fopen($path, 'x+') : fopen($file, 'a+');
 		if (!is_resource($fp)) {
 			return false;
 		}
+
 		$log = date('H:i:s') . " : {$data['user']} : {$data['message']}\n";
 		fwrite($fp, $log);
 		fclose($fp);
 		return $data;
 	}
 
-	public static function read($date) {
-		$fp = fopen(static::$path . $date, 'r+');
+	public static function read($channel, $date) {
+		$path = static::path($channel, $date);
+
+		if (!static::exists($channel, $date)) {
+			return array();
+		}
+
+		$fp = fopen($path, 'r+');
 		$log = array();
 
 		while (!feof($fp)) {
 			$line = fgets($fp);
+
 			if (preg_match(static::$_pattern, $line, $matches)) {
 				$log[] = $matches;
 			}
@@ -45,9 +55,12 @@ class Log extends \lithium\core\StaticObject {
 	}
 
 	public static function find($type, $options = array()) {
-
 		if (!empty($options['channel'])) {
-			$path = static::$path . '#' . $options['channel'];
+			$path = static::path($options['channel']);
+			if (!is_dir($path)) {
+				return array();
+			}
+
 			return array_values(array_filter(scandir($path), function ($file) {
 				if ($file[0] == '.') {
 					return false;
@@ -66,6 +79,22 @@ class Log extends \lithium\core\StaticObject {
 			$results[] = substr($name, 1);
 		}
 		return $results;
+	}
+
+	public static function exists($channel, $date = null) {
+		$path = static::path($channel, $date);
+
+		return is_dir($path) || is_file($path);
+	}
+
+	public static function path($channel, $date = null) {
+		$path = static::$path.'#'.$channel;
+
+		if (!is_null($date)) {
+			$path .= '/'.$date;
+		}
+
+		return $path;
 	}
 }
 
