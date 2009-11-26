@@ -4,9 +4,10 @@
 <ul>
   <?php foreach ((array)$logs as $date): ?>
     <li>
-      <a href="/bot/view/<?=$channel; ?>/<?=$date; ?>">
-        <?=$date; ?>
-      </a>
+		<?php echo $this->html->link($date, array(
+			'plugin' => 'li3_bot', 'controller' => 'logs', 'action' => 'view',
+			'args' => array($channel, $date)
+		));?>
     </li>
   <?php endforeach;?>
 </ul>

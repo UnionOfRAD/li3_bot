@@ -32,12 +32,12 @@ class LogTest extends \lithium\test\Unit {
 		));
 		$this->assertEqual($expected, $result);
 
-		$expected = array('li3');
+		$expected = array('#li3');
 		$result = MockLog::find('first');
 		$this->assertEqual($expected, $result);
-		
+
 		$expected = array(date('Y-m-d'));
-		$result = MockLog::find('all', array('channel' => 'li3'));
+		$result = MockLog::find('all', array('channel' => '#li3'));
 		$this->assertEqual($expected, $result);
 	}
 

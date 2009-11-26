@@ -20,8 +20,8 @@ class Log extends \lithium\core\StaticObject {
 		if (!is_dir($dir)) {
 			mkdir($dir);
 		}
+		$fp = !file_exists($path) ? fopen($path, 'x+') : fopen($path, 'a+');
 
-		$fp = !file_exists($path) ? fopen($path, 'x+') : fopen($file, 'a+');
 		if (!is_resource($fp)) {
 			return false;
 		}
@@ -38,13 +38,14 @@ class Log extends \lithium\core\StaticObject {
 		if (!static::exists($channel, $date)) {
 			return array();
 		}
-
-		$fp = fopen($path, 'r+');
 		$log = array();
+		$fp = @fopen($path, 'r+');
 
-		while (!feof($fp)) {
-			$line = fgets($fp);
+		if (!is_resource($fp)) {
+			return $log;
+		}
 
+		while ($line = fgets($fp)) {
 			if (preg_match(static::$_pattern, $line, $matches)) {
 				$log[] = $matches;
 			}
@@ -88,12 +89,11 @@ class Log extends \lithium\core\StaticObject {
 	}
 
 	public static function path($channel, $date = null) {
-		$path = static::$path.'#'.$channel;
+		$path = static::$path . '#' . $channel;
 
 		if (!is_null($date)) {
-			$path .= '/'.$date;
+			$path .= '/' . $date;
 		}
-
 		return $path;
 	}
 }
