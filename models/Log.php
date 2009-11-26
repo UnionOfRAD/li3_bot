@@ -39,7 +39,7 @@ class Log extends \lithium\core\StaticObject {
 			return array();
 		}
 		$log = array();
-		$fp = @fopen($path, 'r+');
+		$fp = @fopen($path, 'r');
 
 		if (!is_resource($fp)) {
 			return $log;
