@@ -1,25 +1,29 @@
-<div class="nav">
-  	<?php if ($previous)
- 		echo $this->html->link($previous, array(
+<table class="messages">
+<?php foreach ($log as $i => $line): ?>
+	<?php
+		$hash = abs(crc32($line['user']));
+		$rgb = array($hash % 255, $hash % 255, $hash % 255);
+		$rgb[$hash % 2] = 0;
+	?>
+ 	<tr>
+		<td class="time"><?=$line['time'];?></td>
+		<td class="user" style="color: rgb(<?=implode(',' , $rgb)?>);"><?=$line['user']?></td>
+		<td><?=$line['message']?></td>
+	</tr>
+<?php endforeach; ?>
+</table>
+
+<div class="paging">
+	<?php if ($previous)
+		echo $this->html->link('&larr;', array(
 			'plugin' => 'li3_bot', 'controller' => 'logs', 'action' => 'view',
 			'args' => array($channel, $previous)
-		), array('class' => 'prev'));
+		), array('class' => 'prev', 'escape' => false));
 	?>
-  	<strong><?=$date?></strong>
 	<?php if ($next)
- 		echo $this->html->link($next, array(
+		echo $this->html->link('&rarr;', array(
 			'plugin' => 'li3_bot', 'controller' => 'logs', 'action' => 'view',
 			'args' => array($channel, $next)
-		), array('class' => 'next'));
+		), array('class' => 'next', 'escape' => false));
 	?>
-</div>
-
-<div class="messages">
-<?php foreach ($log as $i => $line): $class = ($i % 2) ? 'even' : 'odd'; ?>
- 	<p class='<?=$class?>'>
-		<em><?=$line['time'];?></em>
-		<strong><?=$line['user']?></strong>
-		<?=$line['message']?>
-	</p>
-<?php endforeach; ?>
 </div>

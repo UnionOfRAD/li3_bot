@@ -1,5 +1,9 @@
 <?php if (empty($logs)): ?>
-<p>Choose a channel to the left.</p>
+<ul class="channels">
+	<?php foreach ((array)$channels as $channel): ?>
+		  <li><?=$this->html->link('#' . $channel, 'bot/' . $channel); ?></li>
+	<?php endforeach;?>
+</ul>
 <?php else: ?>
 <ul>
   <?php foreach ((array)$logs as $date): ?>
