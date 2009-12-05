@@ -1,6 +1,6 @@
 <?php
 
-namespace li3_bot\extensions\commands\bot\plugins;
+namespace li3_bot\extensions\command\bot\plugins;
 
 use \lithium\util\String;
 
@@ -8,7 +8,7 @@ use \lithium\util\String;
  * Tell plugin
  *
  */
-class Tell extends \li3_bot\extensions\commands\bot\Plugin {
+class Tell extends \li3_bot\extensions\command\bot\Plugin {
 
 	protected $_classes = array(
 		'model' => '\li3_bot\models\Tell',

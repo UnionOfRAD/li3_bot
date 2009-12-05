@@ -1,6 +1,6 @@
 <?php
 
-namespace li3_bot\extensions\commands\bot;
+namespace li3_bot\extensions\command\bot;
 
 use \lithium\util\socket\Stream;
 use \lithium\core\Libraries;
@@ -36,7 +36,7 @@ class Irc extends \lithium\console\Command {
 		}
 		$this->socket = new Stream($this->_config);
 
-		$classes = Libraries::locate('commands.bot.plugins');
+		$classes = Libraries::locate('command.bot.plugins');
 
 		foreach ($classes as $class) {
 			if (method_exists($class, 'poll')) {

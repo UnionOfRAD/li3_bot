@@ -1,12 +1,12 @@
 <?php
 
-namespace li3_bot\extensions\commands\bot\plugins;
+namespace li3_bot\extensions\command\bot\plugins;
 
 /**
  * Log plugin
  *
  */
-class Logging extends \li3_bot\extensions\commands\bot\Plugin {
+class Logging extends \li3_bot\extensions\command\bot\Plugin {
 
 	protected $_classes = array(
 		'model' => '\li3_bot\models\Log',

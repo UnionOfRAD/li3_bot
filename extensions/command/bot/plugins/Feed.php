@@ -1,12 +1,12 @@
 <?php
 
-namespace li3_bot\extensions\commands\bot\plugins;
+namespace li3_bot\extensions\command\bot\plugins;
 
 /**
  * Feed plugin
  *
  */
-class Feed extends \li3_bot\extensions\commands\bot\Plugin {
+class Feed extends \li3_bot\extensions\command\bot\Plugin {
 
 	protected $_classes = array(
 		'model' => '\li3_bot\models\Feed',
