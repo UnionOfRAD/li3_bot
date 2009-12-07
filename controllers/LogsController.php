@@ -34,10 +34,6 @@ class LogsController extends \lithium\action\Controller {
 		$previous = date('Y-m-d', strtotime($date) - (60 * 60 * 24));
 		$next = date('Y-m-d', strtotime($date) + (60 * 60 * 24));
 
-		if ($log) {
-			$log = array_reverse($log);
-		}
-
 		if (!Log::exists($channel, $previous)) {
 			$previous = null;
 		}
