@@ -1,6 +1,6 @@
 <?php
 
-namespace li3_bot\extensions\commands\bot;
+namespace li3_bot\extensions\command\bot;
 
 /**
  * Abstract class for Bot plugins

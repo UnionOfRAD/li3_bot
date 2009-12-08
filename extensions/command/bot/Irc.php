@@ -1,6 +1,6 @@
 <?php
 
-namespace li3_bot\extensions\commands\bot;
+namespace li3_bot\extensions\command\bot;
 
 use \lithium\util\socket\Stream;
 use \lithium\core\Libraries;
