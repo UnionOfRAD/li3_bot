@@ -1,6 +1,6 @@
 <?php
 
-namespace li3_bot\tests\cases\extensions\commands\bot\plugins;
+namespace li3_bot\tests\cases\extensions\command\bot\plugins;
 
 use \lithium\console\Request;
 use \lithium\console\Response;
@@ -12,10 +12,10 @@ class MockTellModel extends \li3_bot\models\Tell {
 	}
 }
 
-class MockTell extends \li3_bot\extensions\commands\bot\plugins\Tell {
+class MockTell extends \li3_bot\extensions\command\bot\plugins\Tell {
 
 	protected $_classes = array(
-		'model' => '\li3_bot\tests\cases\extensions\commands\bot\plugins\MockTellModel'
+		'model' => '\li3_bot\tests\cases\extensions\command\bot\plugins\MockTellModel'
 	);
 }
 

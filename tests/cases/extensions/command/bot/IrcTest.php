@@ -1,8 +1,8 @@
 <?php
 
-namespace li3_bot\tests\cases\extensions\commands\bot;
+namespace li3_bot\tests\cases\extensions\command\bot;
 
-use \li3_bot\extensions\commands\bot\Irc;
+use \li3_bot\extensions\command\bot\Irc;
 use \lithium\console\Request;
 use \lithium\console\Response;
 
