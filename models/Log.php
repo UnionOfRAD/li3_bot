@@ -10,7 +10,7 @@ class Log extends \lithium\core\StaticObject {
 	protected static $_pattern = null;
 
 	public static function __init() {
-		static::$path = LITHIUM_APP_PATH . '/tmp/logs/';
+		static::$path = LITHIUM_APP_PATH . '/resources/bot/logs/';
 		static::$_pattern = '/^(?P<time>\d+:\d+(:\d+)?) : (?P<user>[^\s]+) : (?P<message>.*)/';
 	}
 

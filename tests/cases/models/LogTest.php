@@ -5,7 +5,7 @@ namespace li3_bot\tests\cases\models;
 class MockLog extends \li3_bot\models\Log {
 
 	public static function __init() {
-		static::$path = LITHIUM_APP_PATH . '/tmp/tests/logs/';
+		static::$path = LITHIUM_APP_PATH . '/resources/tmp/tests/logs/';
 		if (!is_dir(static::$path)) {
 			mkdir(static::$path, 0777, true);
 		}

@@ -10,7 +10,7 @@ class Tell extends \lithium\core\StaticObject {
 
 	public static function __init() {
 		parent::__init();
-		static::$path = LITHIUM_APP_PATH . '/tmp/tells.ini';
+		static::$path = LITHIUM_APP_PATH . '/resources/bot/tells.ini';
 	}
 
 	public static function save($data = array()) {

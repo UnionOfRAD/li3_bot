@@ -8,7 +8,7 @@ use \lithium\console\Response;
 class MockTellModel extends \li3_bot\models\Tell {
 
 	public static function __init() {
-		static::$path = LITHIUM_APP_PATH . '/tmp/test_tells.ini';
+		static::$path = LITHIUM_APP_PATH . '/resources/tmp/tests/test_tells.ini';
 	}
 }
 

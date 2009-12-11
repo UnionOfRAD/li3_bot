@@ -7,7 +7,7 @@ use \li3_bot\models\Tell;
 class TellTest extends \lithium\test\Unit {
 
 	public function setUp() {
-		Tell::$path = LITHIUM_APP_PATH . '/tmp/test_tells.ini';
+		Tell::$path = LITHIUM_APP_PATH . '/resources/tmp/tests/test_tells.ini';
 	}
 
 	public function tearDown() {
