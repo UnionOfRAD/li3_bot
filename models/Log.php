@@ -76,10 +76,10 @@ class Log extends \lithium\core\StaticObject {
 		foreach ($directory as $dir) {
 			$name = $dir->getFilename();
 
-			if (strpos($name, '_') === false) {
+			if ($dir->isDot() || !$dir->isDir()) {
 				continue;
 			}
-			$results[] = str_replace("_", "#", $name);
+			$results[] = $name;
 		}
 		return $results;
 	}
@@ -91,7 +91,7 @@ class Log extends \lithium\core\StaticObject {
 	}
 
 	public static function path($channel, $date = null) {
-		$path = static::$path . '/'. str_replace('#', '_', $channel);
+		$path = static::$path . '/'. str_replace('#', '', $channel);
 
 		if (!is_null($date)) {
 			$path .= '/' . $date;

@@ -38,7 +38,7 @@ class LogTest extends \lithium\test\Unit {
 		));
 		$this->assertEqual($expected, $result);
 
-		$expected = array('#li3');
+		$expected = array('li3');
 		$result = MockLog::find('first');
 		$this->assertEqual($expected, $result);
 
@@ -46,7 +46,7 @@ class LogTest extends \lithium\test\Unit {
 		$result = MockLog::find('all', array('channel' => '#li3'));
 		$this->assertEqual($expected, $result);
 
-		$this->assertTrue(is_dir(MockLog::$path . '/_li3'));
+		$this->assertTrue(is_dir(MockLog::$path . '/li3'));
 	}
 
 }
