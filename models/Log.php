@@ -7,10 +7,11 @@ use \DirectoryIterator;
 class Log extends \lithium\core\StaticObject {
 
 	public static $path = null;
+
 	protected static $_pattern = null;
 
 	public static function __init() {
-		static::$path = LITHIUM_APP_PATH . '/resources/bot/logs/';
+		static::$path = LITHIUM_APP_PATH . '/resources/bot/logs';
 		static::$_pattern = '/^(?P<time>\d+:\d+(:\d+)?) : (?P<user>[^\s]+) : (?P<message>.*)/';
 	}
 
@@ -74,10 +75,11 @@ class Log extends \lithium\core\StaticObject {
 		$results = array();
 		foreach ($directory as $dir) {
 			$name = $dir->getFilename();
-			if (strpos($name, '#') === false) {
+
+			if (strpos($name, '_') === false) {
 				continue;
 			}
-			$results[] = substr($name, 1);
+			$results[] = str_replace("_", "#", $name);
 		}
 		return $results;
 	}
@@ -89,7 +91,7 @@ class Log extends \lithium\core\StaticObject {
 	}
 
 	public static function path($channel, $date = null) {
-		$path = static::$path . '#' . $channel;
+		$path = static::$path . '/'. str_replace('#', '_', $channel);
 
 		if (!is_null($date)) {
 			$path .= '/' . $date;
