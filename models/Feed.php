@@ -1,4 +1,10 @@
 <?php
+/**
+ * Lithium: the most rad php framework
+ *
+ * @copyright     Copyright 2009, Union of RAD (http://union-of-rad.org)
+ * @license       http://opensource.org/licenses/bsd-license.php The BSD License
+ */
 
 namespace li3_bot\models;
 
@@ -95,7 +101,9 @@ class Feed extends \lithium\core\StaticObject {
 		$replace = array("#", "\r\n", "\n");
 		$ments = array("", ": ", ": ");
 		foreach ($items as $item) {
-			$description = str_replace($replace, $ments, strip_tags((string)$item['item']['description']));
+			$description = str_replace(
+				$replace, $ments, strip_tags(join(' ', (array)$item['item']['description']))
+			);
 			if (strlen($description) > 50) {
 				$description = substr($description, 0, 50);
 			}
