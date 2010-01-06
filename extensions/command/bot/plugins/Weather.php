@@ -28,7 +28,7 @@ class Weather extends \li3_bot\extensions\command\bot\Plugin {
 	 */
 	protected $_responses = array(
 		'missing' => 'I need a location, {:user}',
-		'unkown' => '{:user}, I cannot find {:location}',
+		'unknown' => '{:user}, I cannot find {:location}',
 		'weather' => 'The weather in {:city}, {:state}, {:country} is {:temperature} with wind {:wind} (feels like {:windchill})',
 	);
 	/**
@@ -56,14 +56,14 @@ class Weather extends \li3_bot\extensions\command\bot\Plugin {
 		$location = $model::find('search', $words[1]);
 
 		if (!$location || isset($location->title)) {
-			return String::insert($responses['unkown'], compact('user') + array('location' => $words[1]));
+			return String::insert($responses['unknown'], compact('user') + array('location' => $words[1]));
 		}
 
 		if (isset($location->location)) {
 			$location = $model::find('search', $location->location[0]->name);
 
 			if (!$location || isset($location->title)) {
-				return String::insert($responses['unkown'], compact('user') + array('location' => $words[1]));
+				return String::insert($responses['unknown'], compact('user') + array('location' => $words[1]));
 			}
 		}
 
