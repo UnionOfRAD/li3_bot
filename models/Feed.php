@@ -21,8 +21,6 @@ class Feed extends \lithium\core\StaticObject {
 
 	protected static $_dates = array();
 
-	protected static $_queue = array();
-
 	protected static $_firstPing = true;
 
 	protected static $_config = array();
@@ -31,7 +29,8 @@ class Feed extends \lithium\core\StaticObject {
 		$plugin = dirname(__DIR__);
 		static::$path = $plugin . '/config/li3_bot.ini';
 		static::$format = join(' ', array(
-			"\x02{:name}\x02", "\x0311∆\x03", "{:description}", "\x036∆\x03",
+			"\x02{:name}\x02", "\x0311∆\x03", "{:title}",
+			"\x0311∆\x03", "{:description}", "\x036∆\x03",
 			"\x02{:author}\x02", "\x0313∆\x03", "{:link}"
 		));
 	}
@@ -44,79 +43,86 @@ class Feed extends \lithium\core\StaticObject {
 	}
 
 	public static function find($type = 'first', $options = array()) {
-		$defaults = array('ping' => true, 'name' => null, 'path' => null);
+		$defaults = array(
+			'ping' => true,
+			'name' => !empty(static::$_config['feeds'][$type]) ? $type : null,
+			'path' => null,
+			'limit' => ($type === 'new' ? 1 : 4)
+		);
 		$options += $defaults;
-
-		if ($options['ping'] && static::$_firstPing) {
-			static::$_firstPing = false;
-			return array();
-		}
 
 		if (empty($options['name'])) {
 			return array();
 		}
-
+		if (!empty(static::$_config['feeds'][$type])) {
+			$options['name'] = $type;
+		}
 		if (empty($options['path']) && !empty(static::$_config['feeds'][$options['name']])) {
 			$options['path'] = static::$_config['feeds'][$options['name']];
 		}
-
 		if (empty($options['path'])) {
 			return array();
 		}
 
 		$name = $options['name'];
+
+		if ($options['ping'] && static::$_firstPing) {
+			static::$_firstPing = false;
+			static::$_dates[$name] = 1;
+			return array();
+		}
+
+		if (empty(static::$_dates[$name])) {
+			static::$_dates[$name] = 1;
+			return array();
+		}
+
 		$data = static::read($options['path']);
 
 		if (empty($data['channel']['item'])) {
 			return array();
 		}
-		foreach ($data['channel']['item'] as &$item) {
+
+		$items = array();
+
+		foreach ($data['channel']['item'] as $item) {
 			$item['pubDate'] = strtotime($item['pubDate']);
-		}
-		static::$_data[$name] = $data;
-		$items = Set::extract('/channel/item', $data);
-
-		if (empty(static::$_dates[$name])) {
-			static::_date($name);
-			static::$_dates[$name] = static::$_dates[$name] - 1; // uncomment to test first ping
-		}
-
-		if ($type === 'new') {
-			$items = Set::extract(
-				'/channel/item[pubDate>' . static::$_dates[$name] . ']', $data
-			);
-			static::_date($name);
+			if ($item['pubDate'] <= static::$_dates[$name] || count($items) >= $options['limit']) {
+				break;
+			}
+			$items[] = $item;
 		}
 
 		# if triggered by user, tell them there is nothing to say
 		if (!count($items) && !$options['ping']) {
 			return array('get back to work');
 		}
-
 		if (empty($items)) {
 			return array();
 		}
 
+		static::$_dates[$name] = $items[0]['pubDate'];
+
 		$result = array();
 		$replace = array("#", "\r\n", "\n");
 		$ments = array("", ": ", ": ");
-		foreach ($items as $item) {
-			$description = str_replace(
-				$replace, $ments, strip_tags(join(' ', (array)$item['item']['description']))
-			);
-			if (strlen($description) > 50) {
-				$description = substr($description, 0, 50);
+
+		foreach (array_reverse($items) as $item) {
+			$description = null;
+
+			if (!empty($item['description'])) {
+				$description = str_replace($replace, $ments, strip_tags($item['description']));
+				if (strlen($description) > 50) {
+					$description = substr($description, 0, 50);
+				}
 			}
 			$result[] = String::insert(static::$format, array(
 				'name' => $name,
-				'author' => $item['item']['author'],
+				'author' => $item['author'],
+				'title' => $item['title'],
 				'description' => $description,
-				'link' => $item['item']['link'],
+				'link' => $item['link'],
 			));
-
-			if (count($result) > 3) {
-				break;
-			}
 		}
 		return $result;
 	}
@@ -131,17 +137,8 @@ class Feed extends \lithium\core\StaticObject {
 	}
 
 	public static function reset() {
-		static::$_data = array();
 		static::$_dates = array();
-		static::$_queue = array();
 		static::$_firstPing = true;
-		static::$_config = array();
-	}
-
-	protected static function _date($name) {
-		$date = Set::extract('/channel/item[1]/pubDate', static::$_data[$name]);
-		static::$_dates[$name] = array_shift($date);
-		return static::$_dates[$name];
 	}
 }
 ?>

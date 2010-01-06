@@ -24,17 +24,25 @@ class FeedTest extends \lithium\test\Unit {
 		MockFeed::reset();
 	}
 
-	public function testFind() {
+	public function testFindFirst() {
 		$expected = array();
 		$result = MockFeed::find('first');
 		$this->assertEqual($expected, $result);
+	}
+
+	public function testFindNew() {
+		$initialize = MockFeed::find('lithium');
 
 		$expected = 1;
 		$result = MockFeed::find('new', array('ping' => false, 'name' => 'lithium'));
 		$this->assertEqual($expected, count($result));
+	}
+
+	public function testFindAll() {
+		$initialize = MockFeed::find('lithium');
 
 		$expected = 4;
-		$result = MockFeed::find('all', array('name' => 'lithium'));
+		$result = MockFeed::find('all', array('ping' => false, 'name' => 'lithium'));
 		$this->assertEqual($expected, count($result));
 	}
 
