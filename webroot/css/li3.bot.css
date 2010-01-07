@@ -1,0 +1,45 @@
+/*-------------------------------------------------------------------------------------------------
+   Lithium: the most rad php framework
+
+   @copyright     Copyright 2009, Union of RAD (http://union-of-rad.org)
+   @license       http://opensource.org/licenses/bsd-license.php The BSD License
+-------------------------------------------------------------------------------------------------*/
+
+/*--- This is the stylesheet for li3_bot ---*/
+
+.markdown p {
+	margin-bottom: 0;
+}
+
+#content {
+	margin-top: 2em;
+}
+table.messages {
+	width: auto;
+}
+.messages {
+	font-family: Monaco, Courier, monospace;
+	font-size: 12px;
+}
+.messages .time {
+	color: #666;
+}
+.messages .user {
+	text-align: right;
+	font-weight: bold;
+}
+.messages .user:before {
+	content: '<';
+}
+.messages .user:after {
+	content: '>';
+}
+.message td {
+	vertical-align: top;
+}
+
+ul.channels {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}

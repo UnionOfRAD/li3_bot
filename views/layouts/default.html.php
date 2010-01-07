@@ -3,7 +3,7 @@
 <head>
 	<?php echo $this->html->charset(); ?>
 	<title>Lithium Bot <?php echo $this->title(); ?></title>
-	<?php echo $this->html->style('base'/* ,'li3.bot' */); ?>
+	<?php echo $this->html->style(array('base', 'li3.bot')); ?>
 	<?php echo $this->scripts(); ?>
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
 </head>
