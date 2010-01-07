@@ -11,7 +11,7 @@
 	margin-top: 2em;
 }
 table.messages {
-	width: auto;
+	width: 100%;
 }
 .messages {
 	vertical-align: top;
@@ -30,6 +30,9 @@ table.messages {
 }
 .messages .user:after {
 	content: '>';
+}
+.message {
+	width: 80%;
 }
 
 ul.channels {

@@ -8,7 +8,7 @@
  	<tr>
 		<td class="time"><?=$line['time'];?></td>
 		<td class="user" style="color: rgb(<?=implode(',' , $rgb)?>);"><?=$line['user']?></td>
-		<td><?= $h($line['message']); ?></td>
+		<td class="message"><?= $h($line['message']); ?></td>
 	</tr>
 <?php endforeach; ?>
 </table>
