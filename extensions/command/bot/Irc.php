@@ -33,10 +33,10 @@ class Irc extends \lithium\console\Command {
 		$this->_config += parse_ini_file($plugin . '/config/li3_bot.ini');
 		foreach ($this->_config as $key => $value) {
 			$key = "_{$key}";
-			if (isset($this->{$key})) {
+			if (isset($this->{$key}) && $key !== '_classes') {
 				$this->{$key} = $value;
 				if ($value && strpos($value, ',') !== false) {
-					$this->{$key} = array_map('trim', explode(',', $value));
+					$this->{$key} = array_map('trim', (array) explode(',', $value));
 				}
 			}
 		}
@@ -105,7 +105,7 @@ class Irc extends \lithium\console\Command {
 			if (isset($params[2])) {
 
 				$cmd = $params[2];
-				$msg = $params[4];
+				$msg = !empty($param[4]) ? $params[4] : null;
 
 				//$this->out($cmd);
 
