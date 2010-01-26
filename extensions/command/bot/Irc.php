@@ -105,7 +105,7 @@ class Irc extends \lithium\console\Command {
 			if (isset($params[2])) {
 
 				$cmd = $params[2];
-				$msg = !empty($param[4]) ? $params[4] : null;
+				$msg = !empty($params[4]) ? $params[4] : null;
 
 				//$this->out($cmd);
 
