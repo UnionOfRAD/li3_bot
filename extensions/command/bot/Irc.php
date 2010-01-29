@@ -66,7 +66,6 @@ class Irc extends \lithium\console\Command {
 			$this->out('connected');
 			$this->_connect();
 		}
-
 		while($this->_running && !$this->socket->eof()) {
 			$this->_process();
 		}
@@ -75,8 +74,7 @@ class Irc extends \lithium\console\Command {
 	public function __call($method, $params) {
 		if ($method[0] === '_') {
 			$value = empty($params) ? $this->{$method} : $params[0];
-			$command = strtoupper(ltrim($method, '_')) . " {$value} \r\n";
-			$this->out($command);
+			$command = strtoupper(ltrim($method, '_')) . " {$value}\r\n";
 			return $this->socket->write($command);
 		}
 	}
@@ -106,8 +104,6 @@ class Irc extends \lithium\console\Command {
 
 				$cmd = $params[2];
 				$msg = !empty($params[4]) ? $params[4] : null;
-
-				//$this->out($cmd);
 
 				switch ($cmd) {
 					case 'PRIVMSG':
