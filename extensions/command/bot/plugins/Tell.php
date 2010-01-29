@@ -70,6 +70,7 @@ class Tell extends \li3_bot\extensions\command\bot\Plugin {
 			$answer = null;
 			$response = $responses['unknown'];
 			if (isset($tells[$key])) {
+				$user = $to;
 				$answer = $tells[$key];
 				$response = $responses['success'];
 			}
@@ -105,10 +106,10 @@ class Tell extends \li3_bot\extensions\command\bot\Plugin {
 
 	protected function _forget($tell) {
 		$model = $this->_classes['model'];
-		$response = $responses['forget_unknown'];
+		$response = $this->_responses['forget_unknown'];
 
 		if ($model::delete($tell)) {
-			$response = $responses['forgot'];
+			$response = $this->_responses['forgot'];
 		}
 		return $response;
 	}
