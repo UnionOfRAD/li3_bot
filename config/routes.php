@@ -1,6 +1,6 @@
 <?php
 
-use \lithium\http\Router;
+use \lithium\net\http\Router;
 
 Router::connect('/bot/view/{:args}', array(
 	'plugin' => 'li3_bot', 'controller' => 'logs', 'action' => 'view'
