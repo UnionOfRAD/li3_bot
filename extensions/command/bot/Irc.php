@@ -8,7 +8,7 @@
 
 namespace li3_bot\extensions\command\bot;
 
-use \lithium\util\socket\Stream;
+use \lithium\net\socket\Stream;
 use \lithium\core\Libraries;
 
 class Irc extends \lithium\console\Command {
