@@ -132,7 +132,7 @@ class Feed extends \lithium\core\StaticObject {
 	*/
 	public static function read($url) {
 		$xml = @simplexml_load_file($url);
-		$xml = Set::reverse($xml);
+		$xml = Set::to('array', $xml);
 		return $xml;
 	}
 
