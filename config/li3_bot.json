@@ -1,0 +1,14 @@
+{
+	"name": "li3_bot",
+	"version": "0.8",
+	"summary": "a bot for connecting with services. Currently supports IRC.",
+	"maintainers":[
+		{ "name": "gwoo", "email": "gwoo@rad-dev.org", "website": "lithify.me" }
+	],
+	"sources": [
+		"git://rad-dev.org/li3_bot.git"
+	],
+	"commands": {
+		"install": ["install"]
+	}
+}
