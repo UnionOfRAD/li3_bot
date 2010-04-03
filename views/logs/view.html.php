@@ -1,3 +1,4 @@
+<?php $this->title("Logs for {$channel} on {$date}"); ?>
 <table class="messages">
 <?php foreach ($log as $i => $line): ?>
 	<?php
