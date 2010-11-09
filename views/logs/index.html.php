@@ -11,7 +11,7 @@
   <?php foreach ((array)$logs as $date): ?>
     <li>
 		<?php echo $this->html->link($date, array(
-			'plugin' => 'li3_bot', 'controller' => 'logs', 'action' => 'view',
+			'library' => 'li3_bot', 'controller' => 'logs', 'action' => 'view',
 			'args' => array($channel, $date)
 		));?>
     </li>

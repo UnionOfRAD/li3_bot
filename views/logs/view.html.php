@@ -22,13 +22,13 @@
 <div class="paging">
 	<?php if ($previous)
 		echo $this->html->link('&larr;', array(
-			'plugin' => 'li3_bot', 'controller' => 'logs', 'action' => 'view',
+			'library' => 'li3_bot', 'controller' => 'logs', 'action' => 'view',
 			'args' => array($channel, $previous)
 		), array('class' => 'prev', 'escape' => false));
 	?>
 	<?php if ($next)
 		echo $this->html->link('&rarr;', array(
-			'plugin' => 'li3_bot', 'controller' => 'logs', 'action' => 'view',
+			'library' => 'li3_bot', 'controller' => 'logs', 'action' => 'view',
 			'args' => array($channel, $next)
 		), array('class' => 'next', 'escape' => false));
 	?>
