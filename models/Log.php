@@ -8,7 +8,8 @@
 
 namespace li3_bot\models;
 
-use \DirectoryIterator;
+use DirectoryIterator;
+use Exception;
 
 class Log extends \lithium\core\StaticObject {
 
@@ -17,8 +18,18 @@ class Log extends \lithium\core\StaticObject {
 	protected static $_pattern = null;
 
 	public static function __init() {
-		static::$path = LITHIUM_APP_PATH . '/resources/bot/logs';
+		static::$path = $path = LITHIUM_APP_PATH . '/resources/bot/logs';
 		static::$_pattern = '/^(?P<time>\d+:\d+(:\d+)?) : (?P<user>[^\s]+) : (?P<message>.*)/';
+
+		if (!is_dir($path)) {
+			throw new Exception("Logs directory at `{$path}` doesn't exist");
+		}
+		if (!is_readable($path)) {
+			throw new Exception("Logs directory at `{$path}` is not readable");
+		}
+		if (!is_writable($path)) {
+			throw new Exception("Logs directory at `{$path}` is not writable");
+		}
 	}
 
 	public static function save($data = null) {
