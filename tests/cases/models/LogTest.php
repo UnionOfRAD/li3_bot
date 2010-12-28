@@ -38,6 +38,6 @@ class LogTest extends \lithium\test\Unit {
 
 		$this->assertTrue(is_dir(MockLog::$path . '/li3'));
 	}
-
 }
+
 ?>
