@@ -25,7 +25,7 @@ abstract class Plugin extends \lithium\console\Command {
 	 * Process messages and message output 
 	 * {{{
 	 * $data = array(
-	 *     'channel' => '#li3', 'nick'=> 'Li3Bot'
+	 *     'channel' => '#li3', 'nick'=> 'li3_bot'
 	 *     'user' => 'gwoo', 'message' => '~cool'
 	 * );
 	 * }}}

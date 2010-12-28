@@ -23,7 +23,7 @@ class LogTest extends \lithium\test\Unit {
 	public function testSaveAndFind() {
 		$expected = true;
 		$result = MockLog::save(array(
-			'channel'=> '#li3', 'nick' => 'Li3Bot',
+			'channel'=> '#li3', 'nick' => 'li3_bot',
 			'user' => 'gwoo', 'message' => 'the log message'
 		));
 		$this->assertEqual($expected, $result);
