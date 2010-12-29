@@ -9,7 +9,6 @@
 namespace li3_bot\controllers;
 
 use li3_bot\models\Log;
-use lithium\net\http\Router;
 
 class LogsController extends \lithium\action\Controller {
 

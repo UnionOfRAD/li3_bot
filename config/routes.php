@@ -14,5 +14,8 @@ Router::connect('/bot/logs/{:channel}', array(
 Router::connect('/bot/logs/{:channel}/{:date}', array(
 	'library' => 'li3_bot', 'controller' => 'logs', 'action' => 'view'
 ));
+Router::connect('/bot/tells', array(
+	'library' => 'li3_bot', 'controller' => 'tells', 'action' => 'index'
+));
 
 ?>

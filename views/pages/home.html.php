@@ -13,6 +13,18 @@
 	</ul>
 </div>
 
+<div class="tells">
+	<h3>Most Recent <?=$this->html->link('Tells', array(
+		'library' => 'li3_bot',
+		'controller' => 'tells', 'action' => 'index'
+	)); ?></h3>
+	<dl class="tells">
+	<?php foreach ($tells as $key => $value): ?>
+		<dt><?php echo $key ?></dt><dd><?php echo $value ?></dd>
+	<?php endforeach; ?>
+	</dl>
+</div>
+
 <div class="plugins">
 	<?php if ($plugins): ?>
 		<?php foreach ($plugins as &$plugin): ?>
