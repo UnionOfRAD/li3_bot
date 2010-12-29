@@ -114,7 +114,7 @@ class Feed extends \lithium\core\StaticObject {
 			if (!empty($item['description'])) {
 				$description = str_replace($replace, $ments, strip_tags($item['description']));
 				if (strlen($description) > 50) {
-					$description = substr($description, 0, 50);
+					$description = substr($description, 0, 50) . '...';
 				}
 			}
 			$result[] = String::insert(static::$format, array(
