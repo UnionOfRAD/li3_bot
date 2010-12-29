@@ -14,6 +14,7 @@
 	<tr id="<?php echo $i ?>">
 		<td class="time">
 			<?=$this->html->link($line['time'], array(
+				'library' => 'li3_bot',
 				'controller' => 'logs', 'action' => 'view',
 				'#' => $i
 			) + compact('channel', 'date')); ?>
