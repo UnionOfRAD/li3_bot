@@ -45,6 +45,27 @@ class IrcTest extends \lithium\test\Unit {
 		$this->assertEqual($expected, $result);
 	}
 
+	public function testParseMessage() {
+		$line = ':nperson!~davidpers@e176014212.adsl.example.org PRIVMSG #li3_bot :hello';
+		$result = $this->irc->parse("(\s|(?<=\s):|^:)", $line, 5);
+		$expected = array(
+			0 => '',
+			1 => 'nperson!~davidpers@e176014212.adsl.example.org',
+			2 => 'PRIVMSG',
+			3 => '#li3_bot',
+			4 => 'hello'
+		);
+		$this->assertEqual($expected, $result);
+
+		$line = ':nperson!~davidpers@e176014212.adsl.example.org PRIVMSG #li3_bot :This test.';
+		$result = $this->irc->parse("(\s|(?<=\s):|^:)", $line, 5);
+		$this->assertEqual('This test.', $result[4]);
+
+		$line = ':nperson!~davidpers@e176014212.adsl.example.org PRIVMSG #li3_bot ::)';
+		$result = $this->irc->parse("(\s|(?<=\s):|^:)", $line, 5);
+		$this->assertEqual(':)', $result[4]);
+	}
+
 	public function testProcess() {
 		$this->irc->run();
 		$resource = $this->irc->socket->resource();
