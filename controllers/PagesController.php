@@ -8,12 +8,13 @@
 
 namespace li3_bot\controllers;
 
-use \li3_bot\models\Log;
+use li3_bot\models\Log;
 
 class PagesController extends \lithium\action\Controller {
 
 	public function home() {
-
+		$channels = Log::find('all');
+		return compact('channels');
 	}
 }
 
