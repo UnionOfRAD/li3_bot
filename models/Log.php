@@ -81,10 +81,7 @@ class Log extends \lithium\core\StaticObject {
 			}
 
 			return array_values(array_filter(scandir($path), function ($file) {
-				if ($file[0] == '.') {
-					return false;
-				}
-				return true;
+				return $file[0] != '.';
 			}));
 		}
 
