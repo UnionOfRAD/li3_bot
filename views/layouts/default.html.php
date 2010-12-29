@@ -12,7 +12,7 @@
 		<div id="header">
 			<h1>Lithium</h1>
 			<h2>Bot</h2>
-			<?php if (isset($breadcrums)): ?>
+			<?php if (isset($breadcrumbs)): ?>
 				<ul class="crumbs">
 				<?php foreach ($breadcrumbs as $link => $title): ?>
 					  <li><?php echo ($link != '#') ? $this->html->link($title, $link) : $title; ?></li>
