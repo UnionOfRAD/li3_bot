@@ -10,11 +10,19 @@
 </ul>
 <?php else: ?>
 <?php $this->title("Logs for {$channel}"); ?>
+<?=$this->form->create(null, array('url' => "/bot/logs/{$channel}/search", 'class' => 'search')) ?>
+<?=$this->form->field('query', array(
+	'type' => 'search',
+	'placeholder' => 'regex',
+	'label' => 'Search'
+)); ?>
+<?=$this->form->end(); ?>
 <ul>
   <?php foreach ((array)$logs as $date): ?>
     <li>
 		<?php echo $this->html->link($date, array(
-			'library' => 'li3_bot', 'controller' => 'logs', 'action' => 'view'
+			'library' => 'li3_bot',
+			'controller' => 'logs', 'action' => 'view'
 		) + compact('channel', 'date'));?>
     </li>
   <?php endforeach;?>
