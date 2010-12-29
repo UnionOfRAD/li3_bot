@@ -9,7 +9,7 @@
 namespace li3_bot\models;
 
 use lithium\util\String;
-use lithium\net\http\Media;
+use lithium\util\Collection;
 
 class Feed extends \lithium\core\StaticObject {
 
@@ -82,10 +82,11 @@ class Feed extends \lithium\core\StaticObject {
 		if (empty($data['channel']['item'])) {
 			return array();
 		}
-
 		$items = array();
 
 		foreach ($data['channel']['item'] as $item) {
+			$item = Collection::toArray($item);
+
 			$item['pubDate'] = strtotime($item['pubDate']);
 			if ($item['pubDate'] <= static::$_dates[$name] || count($items) >= $options['limit']) {
 				break;
@@ -132,8 +133,7 @@ class Feed extends \lithium\core\StaticObject {
 	*/
 	public static function read($url) {
 		$xml = @simplexml_load_file($url);
-		$xml = Media::to('array', $xml);
-		return $xml;
+		return Collection::toArray($xml);
 	}
 
 	public static function reset() {
