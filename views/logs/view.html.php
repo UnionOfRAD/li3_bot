@@ -11,8 +11,14 @@
 			$h($line['message'])
 		);
 	?>
- 	<tr>
-		<td class="time"><?=$line['time'];?></td>
+	<tr id="<?php echo $i ?>">
+		<td class="time">
+			<?=$this->html->link($line['time'], array(
+				'controller' => 'logs', 'action' => 'view',
+				'args' => array($channel, $date),
+				'#' => $i
+			)); ?>
+		</td>
 		<td class="user" style="color: rgb(<?=implode(',' , $rgb)?>);"><?=$line['user']?></td>
 		<td class="message"><?php echo $message; ?></td>
 	</tr>
