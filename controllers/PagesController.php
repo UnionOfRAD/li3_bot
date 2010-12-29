@@ -9,12 +9,15 @@
 namespace li3_bot\controllers;
 
 use li3_bot\models\Log;
+use lithium\core\Libraries;
 
 class PagesController extends \lithium\action\Controller {
 
 	public function home() {
 		$channels = Log::find('all');
-		return compact('channels');
+		$plugins = Libraries::locate('command.bot.plugins');
+
+		return compact('channels', 'plugins');
 	}
 }
 
