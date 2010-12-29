@@ -98,7 +98,7 @@ class Irc extends \lithium\console\Command {
 		}
 
 		if ($line{0} === ':') {
-			$params = $this->_parse("\s:", $line, 5);
+			$params = $this->_parse("(\s|(?<=\s):|^:)", $line, 5);
 
 			if (isset($params[2])) {
 
@@ -162,7 +162,7 @@ class Irc extends \lithium\console\Command {
 	}
 
 	protected function _parse($regex, $string, $offset = -1) {
-		return str_replace(array("\r\n", "\n"), '', preg_split("/[{$regex}]+/", $string, $offset));
+		return str_replace(array("\r\n", "\n"), '', preg_split("/{$regex}+/", $string, $offset));
 	}
 }
 ?>
