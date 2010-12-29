@@ -8,7 +8,7 @@
 
 namespace li3_bot\tests\mocks\extensions\command;
 
-class MockIrcSocket extends \lithium\util\Socket {
+class MockIrcStream extends \lithium\net\socket\Stream {
 
 	protected $_data = null;
 
@@ -41,7 +41,7 @@ class MockIrcSocket extends \lithium\util\Socket {
 		return true;
 	}
 
-	public function send($message, $options = array()) {
+	public function send($message, array $options = array()) {
 		return true;
 	}
 }

@@ -8,10 +8,10 @@
 
 namespace li3_bot\tests\cases\extensions\command\bot;
 
-use \lithium\console\Request;
-use \lithium\console\Response;
-use \li3_bot\tests\mocks\extensions\command\bot\MockIrc;
-use li3_bot\tests\mocks\extensions\command\MockIrcSocket;
+use lithium\console\Request;
+use lithium\console\Response;
+use li3_bot\tests\mocks\extensions\command\bot\MockIrc;
+use li3_bot\tests\mocks\extensions\command\MockIrcStream;
 
 
 class IrcTest extends \lithium\test\Unit {
@@ -23,7 +23,7 @@ class IrcTest extends \lithium\test\Unit {
 			'output' => fopen('php://temp', 'w+'),
 			'error' => fopen('php://temp', 'w+')
 		));
-		$this->irc->socket = new MockIrcSocket();
+		$this->irc->socket = new MockIrcStream();
 	}
 
 	public function tearDown() {

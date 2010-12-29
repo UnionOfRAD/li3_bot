@@ -9,9 +9,14 @@
 namespace li3_bot\tests\mocks\extensions\command\bot;
 
 class MockIrc extends \li3_bot\extensions\command\bot\Irc {
-	
+
 	public function process() {
 		return $this->_process();
 	}
-	
+
+	public function parse($regex, $string, $offset = -1) {
+		return $this->_parse($regex, $string, $offset);
+	}
 }
+
+?>
