@@ -14,8 +14,8 @@
 			<h2>Bot</h2>
 			<?php if (isset($breadcrumbs)): ?>
 				<ul class="crumbs">
-				<?php foreach ($breadcrumbs as $link => $title): ?>
-					  <li><?php echo ($link != '#') ? $this->html->link($title, $link) : $title; ?></li>
+				<?php foreach ($breadcrumbs as $crumb): ?>
+					  <li><?php echo $crumb['url'] ? $this->html->link($crumb['title'], $crumb['url']) : $crumb['title']; ?></li>
 				<?php endforeach; ?>
 				</ul>
 			<? endif; ?>

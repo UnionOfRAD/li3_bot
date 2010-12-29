@@ -8,17 +8,25 @@
 
 namespace li3_bot\controllers;
 
-use \li3_bot\models\Log;
+use li3_bot\models\Log;
+use lithium\net\http\Router;
 
 class LogsController extends \lithium\action\Controller {
 
 	public function index() {
 		$channels = Log::find('all');
-		$breadcrumbs = array('bot' => 'Channels');
 		$logs = null;
 
+		$breadcrumbs[] = array(
+			'title' => 'Channels',
+			'url' => array('library' => 'li3_bot', 'controller' => 'logs', 'action' => 'index')
+		);
+
 		if ($channel = $this->request->channel) {
-			$breadcrumbs['#'] = '#'.$channel;
+			$breadcrumbs[] = array(
+				'title' => "#{$channel}",
+				'url' => null
+			);
 			$logs = Log::find('all', compact('channel'));
 
 			natsort($logs);
@@ -31,9 +39,20 @@ class LogsController extends \lithium\action\Controller {
 		$date = $this->request->date;
 		$channel = $this->request->channel;
 
-		$breadcrumbs = array('bot' => 'Channels');
-		$breadcrumbs['bot/'.$channel] = '#'.$channel;
-		$breadcrumbs['#'] = $date;
+		$baseUrl = array('library' => 'li3_bot', 'controller' => 'logs');
+
+		$breadcrumbs[] = array(
+			'title' => 'Channels',
+			'url' => $baseUrl + array('action' => 'index')
+		);
+		$breadcrumbs[] = array(
+			'title' => "#{$channel}",
+			'url' => $baseUrl + array('action' => 'index') + compact('channel')
+		);
+		$breadcrumbs[] = array(
+			'title' => $date,
+			'url' => null
+		);
 
 		$channels = Log::find('all');
 		$log = Log::read($channel, $date);
