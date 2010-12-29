@@ -8,8 +8,8 @@
 
 namespace li3_bot\models;
 
-use \lithium\util\String;
-use \lithium\util\Set;
+use lithium\util\String;
+use lithium\net\http\Media;
 
 class Feed extends \lithium\core\StaticObject {
 
@@ -132,7 +132,7 @@ class Feed extends \lithium\core\StaticObject {
 	*/
 	public static function read($url) {
 		$xml = @simplexml_load_file($url);
-		$xml = Set::to('array', $xml);
+		$xml = Media::to('array', $xml);
 		return $xml;
 	}
 
