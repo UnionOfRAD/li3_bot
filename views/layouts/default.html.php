@@ -12,11 +12,13 @@
 		<div id="header">
 			<h1>Lithium</h1>
 			<h2>Bot</h2>
-			<ul class="crumbs">
-			<?php foreach ($breadcrumbs as $link => $title): ?>
-				  <li><?php echo ($link != '#') ? $this->html->link($title, $link) : $title; ?></li>
-			<?php endforeach; ?>
-			</ul>
+			<?php if (isset($breadcrums)): ?>
+				<ul class="crumbs">
+				<?php foreach ($breadcrumbs as $link => $title): ?>
+					  <li><?php echo ($link != '#') ? $this->html->link($title, $link) : $title; ?></li>
+				<?php endforeach; ?>
+				</ul>
+			<? endif; ?>
 		</div>
 		<div id="content">
 			<?php echo $this->content; ?>

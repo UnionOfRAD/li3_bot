@@ -15,9 +15,8 @@
 		<td class="time">
 			<?=$this->html->link($line['time'], array(
 				'controller' => 'logs', 'action' => 'view',
-				'args' => array($channel, $date),
 				'#' => $i
-			)); ?>
+			) + compact('channel', 'date')); ?>
 		</td>
 		<td class="user" style="color: rgb(<?=implode(',' , $rgb)?>);"><?=$line['user']?></td>
 		<td class="message"><?php echo $message; ?></td>
@@ -29,13 +28,13 @@
 	<?php if ($previous)
 		echo $this->html->link('&larr;', array(
 			'library' => 'li3_bot', 'controller' => 'logs', 'action' => 'view',
-			'args' => array($channel, $previous)
-		), array('class' => 'prev', 'escape' => false));
+			'date' => $previous,
+		) + compact('channel'), array('class' => 'prev', 'escape' => false));
 	?>
 	<?php if ($next)
 		echo $this->html->link('&rarr;', array(
 			'library' => 'li3_bot', 'controller' => 'logs', 'action' => 'view',
-			'args' => array($channel, $next)
-		), array('class' => 'next', 'escape' => false));
+			'date' => $next,
+		) + compact('channel'), array('class' => 'next', 'escape' => false));
 	?>
 </div>
