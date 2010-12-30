@@ -25,6 +25,22 @@
 	</dl>
 </div>
 
+<div class="karmas">
+	<h3>Karma Highscore</h3>
+	<table class="karma">
+		<tr>
+			<th>score</th>
+			<th>nick</th>
+		</tr>
+	<?php foreach ($karmas as $key => $value): ?>
+		<tr>
+			<td><?php echo $value ?></td>
+			<td><?php echo $key ?></td>
+		</tr>
+	<?php endforeach; ?>
+	</table>
+</div>
+
 <div class="plugins">
 	<?php if ($plugins): ?>
 		<?php foreach ($plugins as &$plugin): ?>
