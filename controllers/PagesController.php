@@ -16,7 +16,7 @@ class PagesController extends \lithium\action\Controller {
 
 	public function home() {
 		$channels = Log::find('all');
-		$tells = array_slice(array_reverse(Tell::find('all'), true), 0, 10, true);
+		$tells = Tell::recent();
 		$plugins = Libraries::locate('command.bot.plugins');
 
 		return compact('channels', 'plugins', 'tells');

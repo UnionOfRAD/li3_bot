@@ -56,6 +56,10 @@ class Tell extends \lithium\core\StaticObject {
 		}
 	}
 
+	public static function recent() {
+		return array_slice(array_reverse(static::find('all'), true), 0, 10, true);
+	}
+
 	public static function delete($key) {
 		if (isset(static::$_tells[$key])) {
 			$tells = static::$_tells;
