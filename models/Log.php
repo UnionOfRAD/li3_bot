@@ -35,18 +35,14 @@ class Log extends \lithium\core\StaticObject {
 	public static function save($data = null) {
 		$dir = static::path($data['channel']);
 		$path = static::path($data['channel'], date('Y-m-d'));
+
 		if (!is_dir($dir)) {
 			mkdir($dir);
 		}
-		$fp = !file_exists($path) ? fopen($path, 'x+') : fopen($path, 'a+');
 
-		if (!is_resource($fp)) {
-			return false;
-		}
+		$line = date('H:i:s') . " : {$data['user']} : {$data['message']}\n";
+		file_put_contents($path, $line, FILE_APPEND);
 
-		$log = date('H:i:s') . " : {$data['user']} : {$data['message']}\n";
-		fwrite($fp, $log);
-		fclose($fp);
 		return $data;
 	}
 
