@@ -22,6 +22,7 @@ class Karma extends \lithium\core\StaticObject {
 		if (isset($data[$user])) {
 			return $data[$user];
 		}
+		return 0;
 	}
 
 	public static function highscore() {
@@ -33,14 +34,16 @@ class Karma extends \lithium\core\StaticObject {
 
 	public static function increment($user) {
 		$data = static::_readIni();
-		$data[$user]++;
+
+		isset($data[$user]) ? $data[$user]++ : $data[$user] = 1;
 
 		return static::_writeIni($data);
 	}
 
 	public static function decrement($user) {
 		$data = static::_readIni();
-		$data[$user]--;
+
+		isset($data[$user]) ? $data[$user]-- : $data[$user] = 0;
 
 		return static::_writeIni($data);
 	}
