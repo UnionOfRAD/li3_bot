@@ -48,59 +48,45 @@ class TellTest extends \lithium\test\Unit {
 	}
 
 	public function testProcess() {
-		$expected = 'gwoo, I do not know about cool';
-		$result = $this->tell->process(array(
-		 	'channel' => '#li3', 'nick'=> 'li3_bot',
-		 	'user' => 'gwoo', 'message' => '~cool'
-		));
-		$this->assertEqual($expected, $result);
-
-		$expected = 'gwoo, I will remember lithium';
+		$expected = 'gwoo, I will remember lithium.';
 		$result = $this->tell->process(array(
 		 	'channel' => '#li3', 'nick'=> 'li3_bot',
 		 	'user' => 'gwoo', 'message' => 'li3_bot: lithium is cool'
 		));
 		$this->assertEqual($expected, $result);
 
-		$expected = 'gwoo, lithium is cool';
+		$expected = 'gwoo, lithium is cool.';
 		$result = $this->tell->process(array(
 		 	'channel' => '#li3', 'nick'=> 'li3_bot',
 		 	'user' => 'gwoo', 'message' => '~lithium'
 		));
 		$this->assertEqual($expected, $result);
 
-		$expected = 'bob, lithium is cool';
+		$expected = 'bob, lithium is cool.';
 		$result = $this->tell->process(array(
 		 	'channel' => '#li3', 'nick'=> 'li3_bot',
 		 	'user' => 'gwoo', 'message' => '~tell bob about lithium'
-		));
-		$this->assertEqual($expected, $result);
-
-		$expected = 'gwoo, I do not know about something';
-		$result = $this->tell->process(array(
-		 	'channel' => '#li3', 'nick'=> 'li3_bot',
-		 	'user' => 'gwoo', 'message' => '~tell bob about something'
 		));
 		$this->assertEqual($expected, $result);
 	}
 
 	public function testForget() {
 		MockTellModel::reset();
-		$expected = 'gwoo, I will remember lithium';
+		$expected = 'gwoo, I will remember lithium.';
 		$result = $this->tell->process(array(
 		 	'channel' => '#li3', 'nick'=> 'li3_bot',
 		 	'user' => 'gwoo', 'message' => 'li3_bot: lithium is cool'
 		));
 		$this->assertEqual($expected, $result);
 
-		$expected = 'gwoo, I forgot about lithium';
+		$expected = 'gwoo, I forgot about lithium.';
 		$result = $this->tell->process(array(
 		 	'channel' => '#li3', 'nick'=> 'li3_bot',
 		 	'user' => 'gwoo', 'message' => '~forget lithium'
 		));
 		$this->assertEqual($expected, $result);
 
-		$expected = 'gwoo, I never knew about lithium';
+		$expected = 'gwoo, I never knew about lithium.';
 		$result = $this->tell->process(array(
 		 	'channel' => '#li3', 'nick'=> 'li3_bot',
 		 	'user' => 'gwoo', 'message' => '~forget lithium'
