@@ -28,7 +28,7 @@ class Irc extends \lithium\console\Command {
 	protected $_plugins = array('poll' => array(), 'process' => array());
 
 	protected $_classes = array(
-		'stream' => 'lithium\net\socket\Stream',
+		'socket' => 'lithium\net\socket\Stream',
 		'response' => 'lithium\console\Response'
 	);
 
@@ -46,7 +46,7 @@ class Irc extends \lithium\console\Command {
 				}
 			}
 		}
-		$this->socket = $this->_instance('stream', $this->_config);
+		$this->socket = $this->_instance('socket', $this->_config);
 
 		$classes = Libraries::locate('command.bot.plugins');
 

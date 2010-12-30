@@ -19,7 +19,7 @@ class IrcTest extends \lithium\test\Unit {
 			'request' => new Request(array('input' => fopen('php://temp', 'w+'))),
 			'host' => 'localhost',
 			'classes' => array(
-				'stream' => 'li3_bot\tests\mocks\extensions\command\MockIrcStream',
+				'socket' => 'li3_bot\tests\mocks\extensions\command\MockIrcStream',
 				'response' => 'lithium\tests\mocks\console\MockResponse'
 			)
 		));
