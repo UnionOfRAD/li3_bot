@@ -46,9 +46,11 @@ class Irc extends \lithium\console\Command {
 
 		foreach ($classes as $class) {
 			if (method_exists($class, 'poll')) {
+				$this->out("Registering `poll` method from plugin `{$class}`.");
 				$this->_plugins['poll'][] = new $class($this->_config);
 			}
 			if (method_exists($class, 'process')) {
+				$this->out("Registering `process` method from plugin `{$class}`.");
 				$this->_plugins['process'][] = new $class($this->_config);
 			}
 		}
