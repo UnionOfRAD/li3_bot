@@ -56,12 +56,12 @@ class Karma extends \lithium\core\StaticObject {
 	}
 
 	protected static function _writeIni($data) {
-		$lines = array();
+		$lines = array("[karmas]");
 
 		foreach ($data as $key => $value) {
 			$lines[] = "{$key}={$value}";
 		}
-		return file_put_contents(static::$path, $lines);
+		return file_put_contents(static::$path, implode("\n", $lines));
 	}
 }
 
