@@ -44,7 +44,7 @@ class Karma extends \li3_bot\extensions\command\bot\Plugin {
 		if ($message[0] != '~') {
 			return;
 		}
-		list($command, $user) = preg_split("/[\s]/", $message, 2);
+		list($command, $user) = preg_split("/[\s]/", $message, 2) + array(null, null);
 
 		if (!$user) {
 			return;
