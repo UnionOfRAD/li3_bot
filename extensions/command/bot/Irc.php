@@ -27,8 +27,13 @@ class Irc extends \lithium\console\Command {
 
 	protected $_plugins = array('poll' => array(), 'process' => array());
 
+	protected $_classes = array(
+		'stream' => 'lithium\net\socket\Stream'
+	);
+
 	public function _init() {
 		parent::_init();
+
 		$plugin = dirname(dirname(dirname(__DIR__)));
 		$this->_config += parse_ini_file($plugin . '/config/li3_bot.ini');
 		foreach ($this->_config as $key => $value) {
@@ -40,7 +45,7 @@ class Irc extends \lithium\console\Command {
 				}
 			}
 		}
-		$this->socket = new Stream($this->_config);
+		$this->socket = $this->_instance('stream', $this->_config);
 
 		$classes = Libraries::locate('command.bot.plugins');
 
