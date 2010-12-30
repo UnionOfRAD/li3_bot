@@ -28,7 +28,8 @@ class Irc extends \lithium\console\Command {
 	protected $_plugins = array('poll' => array(), 'process' => array());
 
 	protected $_classes = array(
-		'stream' => 'lithium\net\socket\Stream'
+		'stream' => 'lithium\net\socket\Stream',
+		'response' => 'lithium\console\Response'
 	);
 
 	public function _init() {
