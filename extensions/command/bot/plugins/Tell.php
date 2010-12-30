@@ -30,7 +30,6 @@ class Tell extends \li3_bot\extensions\command\bot\Plugin {
 		'forgot' => '{:user}, I forgot about {:tell}.',
 		'forget_unknown' => '{:user}, I never knew about {:tell}.',
 		'success' => '{:user}, {:tell} is {:answer}.',
-		'unknown' => '{:user}, I do not know about {:tell}.',
 		'known' => '{:user}, I thought {:tell} was {:answer}.',
 		'remember' => '{:user}, I will remember {:tell}.',
 
@@ -67,15 +66,12 @@ class Tell extends \li3_bot\extensions\command\bot\Plugin {
 					));
 				}
 			}
-			$answer = null;
-			$response = $responses['unknown'];
-			if (isset($tells[$key])) {
-				$user = $to;
-				$answer = $tells[$key];
-				$response = $responses['success'];
+			if (!isset($tells[$key])) {
+				/* Not catching unkown tells, those could as well be other commands. */
+				return;
 			}
-			return String::insert($response, array(
-				'user' => $user, 'tell' => $key, 'answer' => $answer
+			return String::insert($responses['success'], array(
+				'user' => $to, 'tell' => $key, 'answer' => $tells[$key]
 			));
 		}
 		if (stripos($message, $nick) !== false) {
