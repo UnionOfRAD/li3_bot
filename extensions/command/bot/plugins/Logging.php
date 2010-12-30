@@ -29,6 +29,6 @@ class Logging extends \li3_bot\extensions\command\bot\Plugin {
 		$model = $this->_classes['model'];
 		$model::save($data);
 	}
-
 }
+
 ?>
