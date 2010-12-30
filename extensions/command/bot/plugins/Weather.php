@@ -27,9 +27,9 @@ class Weather extends \li3_bot\extensions\command\bot\Plugin {
 	 * @var array
 	 */
 	protected $_responses = array(
-		'missing' => 'I need a location, {:user}',
-		'unknown' => '{:user}, I cannot find {:location}',
-		'weather' => 'The weather in {:city}, {:state}, {:country} is {:temperature} with wind {:wind} (feels like {:windchill})',
+		'missing' => 'I need a location, {:user}.',
+		'unknown' => '{:user}, I cannot find {:location}.',
+		'weather' => 'The weather in {:city}, {:state}, {:country} is {:temperature} with wind {:wind} (feels like {:windchill}).',
 	);
 	/**
 	 * Process incoming messages

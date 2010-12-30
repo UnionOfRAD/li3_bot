@@ -27,12 +27,12 @@ class Tell extends \li3_bot\extensions\command\bot\Plugin {
 	 * @var array
 	 */
 	protected $_responses = array(
-		'forgot' => '{:user}, I forgot about {:tell}',
-		'forget_unknown' => '{:user}, I never knew about {:tell}',
-		'success' => '{:user}, {:tell} is {:answer}',
-		'unknown' => '{:user}, I do not know about {:tell}',
-		'known' => '{:user}, I thought {:tell} was {:answer}',
-		'remember' => '{:user}, I will remember {:tell}',
+		'forgot' => '{:user}, I forgot about {:tell}.',
+		'forget_unknown' => '{:user}, I never knew about {:tell}.',
+		'success' => '{:user}, {:tell} is {:answer}.',
+		'unknown' => '{:user}, I do not know about {:tell}.',
+		'known' => '{:user}, I thought {:tell} was {:answer}.',
+		'remember' => '{:user}, I will remember {:tell}.',
 
 	);
 	/**
