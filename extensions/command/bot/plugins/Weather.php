@@ -45,7 +45,7 @@ class Weather extends \li3_bot\extensions\command\bot\Plugin {
 
 		$words = preg_split("/[\s]/", $message, 2);
 
-		if ($words[0] != 'weather') {
+		if ($words[0] != '~weather') {
 			return;
 		}
 
