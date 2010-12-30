@@ -26,9 +26,10 @@ class Karma extends \li3_bot\extensions\command\bot\Plugin {
 	 * @var array
 	 */
 	protected $_responses = array(
-		'update' => "{:user} now has karma {:current}.",
-		'decrementFail' => "{:user} has karma 0, cannot decrement any further.",
-		'current' => "{:user} has karma {:current}."
+		'update' => "{:recipient} now has karma {:current}.",
+		'decrementFail' => "{:recipient} has karma 0, cannot decrement any further.",
+		'current' => "{:recipient} has karma {:current}.",
+		'self' => "{:user}, you cannot give yourself karma."
 	);
 
 	/**
@@ -44,30 +45,35 @@ class Karma extends \li3_bot\extensions\command\bot\Plugin {
 		if ($message[0] != '~') {
 			return;
 		}
-		list($command, $user) = preg_split("/[\s]/", $message, 2) + array(null, null);
+		list($command, $recipient) = preg_split("/[\s]/", $message, 2) + array(null, null);
 
-		if (!$user) {
+		if (!$recipient) {
 			return;
 		}
 
 		if ($command == '~inc') {
-			$model::increment($user);
-			$current = $model::current($user);
-			return String::insert($this->_responses['update'], compact('user', 'current'));
-		} elseif ($command == '~dec') {
-			if ($a = $model::current($user) == 0) {
-				return String::insert($this->_responses['decrementFail'], compact('user'));
+			if ($recipient == $user) {
+				return String::insert($this->_responses['self'], compact('user'));
 			}
-			$model::decrement($user);
-			$current = $model::current($user);
+			$model::increment($recipient);
+			$current = $model::current($recipient);
 
-			return String::insert($this->_responses['update'], compact('user', 'current'));
+			return String::insert($this->_responses['update'], compact('recipient', 'current'));
+		} elseif ($command == '~dec') {
+			if ($model::current($recipient) == 0) {
+				return String::insert($this->_responses['decrementFail'], compact('recipient'));
+			}
+			$model::decrement($recipient);
+			$current = $model::current($recipient);
+
+			return String::insert($this->_responses['update'], compact('recipient', 'current'));
 		} elseif ($command == '~karma') {
-			$current = $model::current($user);
+			$current = $model::current($recipient);
 
-			return String::insert($this->_responses['current'], compact('user', 'current'));
+			return String::insert($this->_responses['current'], compact('recipient', 'current'));
 		}
 	}
+
 }
 
 ?>

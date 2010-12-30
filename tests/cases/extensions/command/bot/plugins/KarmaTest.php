@@ -36,44 +36,66 @@ class KarmaTest extends \lithium\test\Unit {
 		$this->_cleanUp();
 	}
 
-	public function testProcess() {
+	public function testKarmaStatus() {
 		$expected = 'bob has karma 0.';
 		$result = $this->karma->process(array(
-		 	'channel' => '#li3', 'nick'=> 'li3_bot',
-		 	'user' => 'nperson', 'message' => '~karma bob'
+			'channel' => '#li3', 'nick'=> 'li3_bot',
+			'user' => 'nperson', 'message' => '~karma bob'
 		));
 		$this->assertEqual($expected, $result);
+	}
 
+	public function testIncrementKarma() {
 		$expected = 'bob now has karma 1.';
 		$result = $this->karma->process(array(
-		 	'channel' => '#li3', 'nick'=> 'li3_bot',
-		 	'user' => 'nperson', 'message' => '~inc bob'
+			'channel' => '#li3', 'nick'=> 'li3_bot',
+			'user' => 'nperson', 'message' => '~inc bob'
 		));
 		$this->assertEqual($expected, $result);
 
 		$expected = 'bob now has karma 2.';
 		$result = $this->karma->process(array(
-		 	'channel' => '#li3', 'nick'=> 'li3_bot',
-		 	'user' => 'nperson', 'message' => '~inc bob'
+			'channel' => '#li3', 'nick'=> 'li3_bot',
+			'user' => 'nperson', 'message' => '~inc bob'
 		));
 		$this->assertEqual($expected, $result);
+	}
+
+	public function testSelfKarma() {
+		$expected = 'nperson, you cannot give yourself karma.';
+		$result = $this->karma->process(array(
+			'channel' => '#li3', 'nick'=> 'li3_bot',
+			'user' => 'nperson', 'message' => '~inc nperson'
+		));
+		$this->assertEqual($expected, $result);
+	}
+
+	public function testDecrementKarma() {
+		$this->karma->process(array(
+			'channel' => '#li3', 'nick'=> 'li3_bot',
+			'user' => 'nperson', 'message' => '~inc bob'
+		));
+		$this->karma->process(array(
+			'channel' => '#li3', 'nick'=> 'li3_bot',
+			'user' => 'nperson', 'message' => '~inc bob'
+		));
 
 		$expected = 'bob now has karma 1.';
 		$result = $this->karma->process(array(
-		 	'channel' => '#li3', 'nick'=> 'li3_bot',
-		 	'user' => 'nperson', 'message' => '~dec bob'
+			'channel' => '#li3', 'nick'=> 'li3_bot',
+			'user' => 'nperson', 'message' => '~dec bob'
 		));
 		$this->assertEqual($expected, $result);
 
 		$this->karma->process(array(
-		 	'channel' => '#li3', 'nick'=> 'li3_bot',
-		 	'user' => 'nperson', 'message' => '~dec bob'
+			'channel' => '#li3', 'nick'=> 'li3_bot',
+			'user' => 'nperson', 'message' => '~dec bob'
 		));
 
 		$expected = 'bob has karma 0, cannot decrement any further.';
 		$result = $this->karma->process(array(
-		 	'channel' => '#li3', 'nick'=> 'li3_bot',
-		 	'user' => 'nperson', 'message' => '~dec bob'
+			'channel' => '#li3', 'nick'=> 'li3_bot',
+			'user' => 'nperson', 'message' => '~dec bob'
 		));
 		$this->assertEqual($expected, $result);
 	}
