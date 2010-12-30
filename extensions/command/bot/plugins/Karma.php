@@ -28,8 +28,7 @@ class Karma extends \li3_bot\extensions\command\bot\Plugin {
 	protected $_responses = array(
 		'update' => "{:user} now has karma {:current}.",
 		'decrementFail' => "{:user} has karma 0, cannot decrement any further.",
-		'current' => "{:user} has karma {:current}.",
-		'usage' => "Need a nick. Try: `~inc|dec|karma <NICK>`."
+		'current' => "{:user} has karma {:current}."
 	);
 
 	/**
@@ -48,7 +47,7 @@ class Karma extends \li3_bot\extensions\command\bot\Plugin {
 		list($command, $user) = preg_split("/[\s]/", $message, 2);
 
 		if (!$user) {
-			return $this->_responses['usage'];
+			return;
 		}
 
 		if ($command == '~inc') {
