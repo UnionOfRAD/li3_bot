@@ -114,4 +114,5 @@ class Tell extends \li3_bot\extensions\command\bot\Plugin {
 		return $response;
 	}
 }
+
 ?>

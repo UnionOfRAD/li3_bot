@@ -144,4 +144,5 @@ class Feed extends \lithium\core\StaticObject {
 		static::$_firstPing = true;
 	}
 }
+
 ?>
