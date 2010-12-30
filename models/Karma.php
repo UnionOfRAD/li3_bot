@@ -28,7 +28,7 @@ class Karma extends \lithium\core\StaticObject {
 	public static function highscore() {
 		$data = static::_readIni();
 
-		asort($data, SORT_NUMERIC);
+		arsort($data, SORT_NUMERIC);
 		return array_slice($data, 0, 10, true);
 	}
 
