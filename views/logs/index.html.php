@@ -1,4 +1,4 @@
-<?php if (empty($logs)): ?>
+<?php if (empty($logs)): /* Here for BC */ ?>
 <?php $this->title('Channels'); ?>
 <ul class="channels">
 	<?php foreach ((array)$channels as $channel): ?>

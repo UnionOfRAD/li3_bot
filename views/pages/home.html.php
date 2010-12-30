@@ -1,8 +1,5 @@
 <div class="logs">
-	<h3><?=$this->html->link('Channel Logs', array(
-		'library' => 'li3_bot',
-		'controller' => 'logs', 'action' => 'index'
-	)); ?></h3>
+	<h3>Channel Logs</h3>
 	<ul class="channels">
 		<?php foreach ((array) $channels as $channel): ?>
 			 <li><?=$this->html->link("#{$channel}", array(
@@ -14,15 +11,16 @@
 </div>
 
 <div class="tells">
-	<h3>Most Recent <?=$this->html->link('Tells', array(
-		'library' => 'li3_bot',
-		'controller' => 'tells', 'action' => 'index'
-	)); ?></h3>
+	<h3>Most Recent Tells</h3>
 	<dl class="tells">
 	<?php foreach ($tells as $key => $value): ?>
 		<dt><?php echo $key ?></dt><dd><?php echo $value ?></dd>
 	<?php endforeach; ?>
 	</dl>
+	<?=$this->html->link('View all tells...', array(
+		'library' => 'li3_bot',
+		'controller' => 'tells', 'action' => 'index'
+	)); ?>
 </div>
 
 <div class="karmas">

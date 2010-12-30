@@ -21,7 +21,7 @@ class LogsController extends \lithium\action\Controller {
 			'url' => array('library' => 'li3_bot', 'controller' => 'logs', 'action' => 'index')
 		);
 
-		if ($channel = $this->request->channel) {
+		if ($channel = $this->request->channel) { /* Here for BC */
 			$breadcrumbs[] = array(
 				'title' => "#{$channel}",
 				'url' => null
