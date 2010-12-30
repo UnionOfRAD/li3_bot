@@ -8,22 +8,10 @@
 
 namespace li3_bot\tests\cases\extensions\command\bot\plugins;
 
-use \lithium\console\Request;
-use \lithium\console\Response;
-
-class MockTellModel extends \li3_bot\models\Tell {
-
-	public static function __init() {
-		static::$path = LITHIUM_APP_PATH . '/resources/tmp/tests/test_tells.ini';
-	}
-}
-
-class MockTell extends \li3_bot\extensions\command\bot\plugins\Tell {
-
-	protected $_classes = array(
-		'model' => '\li3_bot\tests\cases\extensions\command\bot\plugins\MockTellModel'
-	);
-}
+use lithium\console\Request;
+use lithium\console\Response;
+use li3_bot\tests\mocks\models\MockTell as MockTellModel;
+use li3_bot\tests\mocks\extensions\command\bot\plugins\MockTell;
 
 class TellTest extends \lithium\test\Unit {
 
