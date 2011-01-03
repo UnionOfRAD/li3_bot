@@ -8,7 +8,6 @@
 
 namespace li3_bot\extensions\command\bot;
 
-use \lithium\net\socket\Stream;
 use \lithium\core\Libraries;
 
 class Irc extends \lithium\console\Command {
@@ -20,6 +19,8 @@ class Irc extends \lithium\console\Command {
 	protected $_resource = null;
 
 	protected $_nick = 'li3_bot';
+
+	protected $_password = '';
 
 	protected $_channels = array();
 
@@ -47,24 +48,11 @@ class Irc extends \lithium\console\Command {
 			}
 		}
 		$this->socket = $this->_instance('socket', $this->_config);
-
-		$classes = Libraries::locate('command.bot.plugins');
-
-		foreach ($classes as $class) {
-			if (method_exists($class, 'poll')) {
-				$this->out("Registering `poll` method from plugin `{$class}`.");
-				$this->_plugins['poll'][] = new $class($this->_config);
-			}
-			if (method_exists($class, 'process')) {
-				$this->out("Registering `process` method from plugin `{$class}`.");
-				$this->_plugins['process'][] = new $class($this->_config);
-			}
-		}
 	}
 
 	public function run() {
 		try {
-			$this->_running = (bool) $this->socket->open();
+			$this->_running = (boolean) $this->socket->open();
 			$this->_resource = $this->socket->resource();
 		} catch (Exception $e) {
 			$this->out($e);
@@ -73,6 +61,7 @@ class Irc extends \lithium\console\Command {
 		if ($this->_running) {
 			$this->out('connected');
 			$this->_connect();
+			$this->_plugins();
 		}
 		while($this->_running && !$this->socket->eof()) {
 			$this->_process();
@@ -88,8 +77,8 @@ class Irc extends \lithium\console\Command {
 	}
 
 	protected function _connect() {
-		$this->_nick();
-		$this->_user("{$this->_nick} {$this->_config['host']} botts :{$this->_nick}");
+		$this->_nick("{$this->_nick} {$this->_password}");
+		$this->_user("{$this->_nick} {$this->_config['host']} Irc bot");
 	}
 
 	protected function _process() {
@@ -130,7 +119,7 @@ class Irc extends \lithium\console\Command {
 					case '461':
 					case '422':
 					case '376':
-						foreach ((array)$this->_channels as $channel) {
+						foreach ((array) $this->_channels as $channel) {
 							if (empty($this->_joined[$channel])) {
 								$this->_join($channel);
 								$this->out("{$this->_nick} joined {$channel}");
@@ -157,13 +146,28 @@ class Irc extends \lithium\console\Command {
 		}
 	}
 
+	protected function _plugins() {
+		$classes = Libraries::locate('command.bot.plugins');
+
+		foreach ($classes as $class) {
+			if (method_exists($class, 'poll')) {
+				$this->out("Registering `poll` method from plugin `{$class}`.");
+				$this->_plugins['poll'][] = new $class($this->_config);
+			}
+			if (method_exists($class, 'process')) {
+				$this->out("Registering `process` method from plugin `{$class}`.");
+				$this->_plugins['process'][] = new $class($this->_config);
+			}
+		}
+	}
+
 	protected function _respond($channels, $responses) {
 		if (empty($responses)) {
 			return;
 		}
-		foreach ((array)$channels as $channel) {
+		foreach ((array) $channels as $channel) {
 			$this->out('Sending ' . count($responses) . ' messages to ' . $channel);
-			foreach ((array)$responses as $response) {
+			foreach ((array) $responses as $response) {
 				$this->_privmsg("{$channel} :{$response}");
 			}
 		}
@@ -173,4 +177,5 @@ class Irc extends \lithium\console\Command {
 		return str_replace(array("\r\n", "\n"), '', preg_split("/{$regex}+/", $string, $offset));
 	}
 }
+
 ?>
