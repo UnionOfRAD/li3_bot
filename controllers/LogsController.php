@@ -70,7 +70,7 @@ class LogsController extends \lithium\action\Controller {
 
 	public function search() {
 		$channel = $this->request->channel;
-		$query = $this->request->data['query'];
+		$query = $this->request->query['query'];
 
 		$log = Log::search($query, array(
 			'channel' => $this->request->channel
