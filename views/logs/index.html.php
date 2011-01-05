@@ -10,7 +10,11 @@
 </ul>
 <?php else: ?>
 <?php $this->title("Logs for {$channel}"); ?>
-<?=$this->form->create(null, array('url' => "/bot/logs/{$channel}/search", 'class' => 'search')) ?>
+<?=$this->form->create(null, array(
+	'url' => "/bot/logs/search/{$channel}",
+	'class' => 'search',
+	'method' => 'get'
+)) ?>
 <?=$this->form->field('query', array(
 	'type' => 'search',
 	'placeholder' => 'regex',

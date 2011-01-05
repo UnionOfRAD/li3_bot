@@ -1,6 +1,10 @@
 <?php $this->title("Search results for {$channel} logs"); ?>
 
-<?=$this->form->create(null, array('url' => "/bot/logs/{$channel}/search", 'class' => 'search')) ?>
+<?=$this->form->create(null, array(
+	'url' => "/bot/logs/search/{$channel}",
+	'class' => 'search',
+	'method' => 'get'
+)) ?>
 <?=$this->form->field('query', array(
 	'type' => 'search',
 	'placeholder' => 'regex',
