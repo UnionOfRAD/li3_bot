@@ -171,8 +171,10 @@ class Irc extends \lithium\console\Command {
 			return;
 		}
 		foreach ((array) $channels as $channel) {
-			$this->out('Sending ' . count($responses) . ' messages to ' . $channel);
+			$this->out('Sending ' . count($responses) . " message(s) to channel `{$channel}`:");
+
 			foreach ((array) $responses as $response) {
+				$this->out($response);
 				$this->_privmsg("{$channel} :{$response}");
 			}
 		}
