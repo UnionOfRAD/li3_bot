@@ -54,9 +54,7 @@ $nickRgb = function($nick) {
 		<?php foreach ($karmas as $key => $value): ?>
 			<tr>
 				<td><?php echo $value ?></td>
-				<td class="user" style="color: rgb(<?=implode(',' , $nickRgb($key))?>);">
-					<?php echo $key ?>
-				</td>
+				<td class="user" style="color: rgb(<?=implode(',' , $nickRgb($key))?>);"><?php echo $key ?></td>
 			</tr>
 		<?php endforeach; ?>
 		</table>

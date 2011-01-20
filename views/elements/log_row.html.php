@@ -23,8 +23,6 @@
 			'date' => isset($item['date']) ? $item['date'] : $date
 		) + compact('channel'), array('title' => 'context')); ?>
 	</td>
-	<td class="user" style="color: rgb(<?=implode(',' , $nickRgb($item['user']))?>);">
-		<?=$item['user']?>
-	</td>
+	<td class="user" style="color: rgb(<?=implode(',' , $nickRgb($item['user']))?>);"><?=$item['user']?></td>
 	<td class="message"><?php echo $message; ?></td>
 </tr>
