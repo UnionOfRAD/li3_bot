@@ -1,7 +1,13 @@
 <?php
-	$hash = abs(crc32($item['user']));
-	$rgb = array($hash % 255, $hash % 255, $hash % 255);
-	$rgb[$hash % 2] = 0;
+	$nickRgb = function($nick) {
+		$hash = abs(crc32($nick));
+
+		$rgb = array($hash % 255, $hash % 255, $hash % 255);
+		$rgb[$hash % 2] = 0;
+
+		return $rgb;
+	};
+
 	$message = preg_replace(
 		'@(https?://([-\w\.]+)+(:\d+)?(/([-\w/_\.,#\(\)={}\+\?]*(\?\S+)?)?)?)@',
 		'<a href="$1">$1</a>',
@@ -17,6 +23,8 @@
 			'date' => isset($item['date']) ? $item['date'] : $date
 		) + compact('channel'), array('title' => 'context')); ?>
 	</td>
-	<td class="user" style="color: rgb(<?=implode(',' , $rgb)?>);"><?=$item['user']?></td>
+	<td class="user" style="color: rgb(<?=implode(',' , $nickRgb($item['user']))?>);">
+		<?=$item['user']?>
+	</td>
 	<td class="message"><?php echo $message; ?></td>
 </tr>
