@@ -67,7 +67,7 @@ class Tell extends \li3_bot\extensions\command\bot\Plugin {
 				}
 			}
 			if (!isset($tells[$key])) {
-				/* Not catching unkown tells, those could as well be other commands. */
+				/* Not catching unknown tells, those could as well be other commands. */
 				return;
 			}
 			return String::insert($responses['success'], array(
