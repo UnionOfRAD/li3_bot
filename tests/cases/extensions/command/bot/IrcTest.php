@@ -71,14 +71,17 @@ class IrcTest extends \lithium\test\Unit {
 		rewind($resource);
 		fwrite($resource, 'something');
 		rewind($resource);
-		$result = $this->irc->process();
+		$line = fgets($resource);
+		$result = $this->irc->process($line);
 
 		$expected = "connected\n";
 		$result = $this->irc->response->output;
 		$this->assertTrue(strpos($result, $expected) !== false);
 
+		rewind($resource);
+
 		$expected = "something";
-		$result = fread($resource, 1024);
+		$result = fread($resource, strlen('something'));
 		$this->assertEqual($expected, $result);
 	}
 }

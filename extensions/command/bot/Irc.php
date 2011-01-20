@@ -63,8 +63,8 @@ class Irc extends \lithium\console\Command {
 			$this->_connect();
 			$this->_plugins();
 		}
-		while($this->_running && !$this->socket->eof()) {
-			$this->_process();
+		while ($this->_running && !$this->socket->eof()) {
+			$this->_process(fgets($this->_resource));
 		}
 	}
 
@@ -76,14 +76,19 @@ class Irc extends \lithium\console\Command {
 		}
 	}
 
+	protected function _privmsg($command) {
+		$command = ":{$this->_nick}!@localhost PRIVMSG {$command}";
+
+		$this->_process($command);
+		return $this->socket->write($command);
+	}
+
 	protected function _connect() {
 		$this->_nick("{$this->_nick} {$this->_password}");
 		$this->_user("{$this->_nick} {$this->_config['host']} Irc bot");
 	}
 
-	protected function _process() {
-		$line =	 fgets($this->_resource);
-
+	protected function _process($line) {
 		if (stripos($line, 'PING') !== false) {
 			list($ping, $pong) = $this->_parse(':', $line, 2);
 			$this->_pong($pong);
