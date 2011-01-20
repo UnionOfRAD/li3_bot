@@ -78,10 +78,10 @@ class Irc extends \lithium\console\Command {
 	}
 
 	protected function _privmsg($command) {
-		$command = ":{$this->_nick}!@localhost PRIVMSG {$command}";
-
-		$this->_process($command);
-		return $this->socket->write($command);
+		if ($this->socket->write("PRIVMSG {$command}\r\n")) {
+			$this->_process(":{$this->_nick}!@localhost PRIVMSG {$command}\r\n");
+			return true;
+		}
 	}
 
 	protected function _connect() {
