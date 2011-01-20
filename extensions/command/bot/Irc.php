@@ -72,6 +72,7 @@ class Irc extends \lithium\console\Command {
 		if ($method[0] === '_') {
 			$value = empty($params) ? $this->{$method} : $params[0];
 			$command = strtoupper(ltrim($method, '_')) . " {$value}\r\n";
+
 			return $this->socket->write($command);
 		}
 	}
@@ -98,8 +99,7 @@ class Irc extends \lithium\console\Command {
 			}
 			return true;
 		}
-
-		if ($line{0} === ':') {
+		if ($line[0] === ':') {
 			$params = $this->_parse("(\s|(?<=\s):|^:)", $line, 5);
 
 			if (isset($params[2])) {
