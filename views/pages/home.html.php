@@ -1,3 +1,15 @@
+<?php
+
+$nickRgb = function($nick) {
+	$hash = abs(crc32($nick));
+
+	$rgb = array($hash % 255, $hash % 255, $hash % 255);
+	$rgb[$hash % 2] = 0;
+
+	return $rgb;
+};
+
+?>
 <div class="logs">
 	<h3>Channel Logs</h3>
 	<?php if ($channels): ?>
@@ -42,7 +54,9 @@
 		<?php foreach ($karmas as $key => $value): ?>
 			<tr>
 				<td><?php echo $value ?></td>
-				<td><?php echo $key ?></td>
+				<td class="user" style="color: rgb(<?=implode(',' , $nickRgb($key))?>);">
+					<?php echo $key ?>
+				</td>
 			</tr>
 		<?php endforeach; ?>
 		</table>
