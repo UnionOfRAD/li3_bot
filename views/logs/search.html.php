@@ -17,16 +17,21 @@
 <?php foreach ($log as $i => $line): ?>
 <?php
 	$previous = $i == 0 ? null : $log[$i - 1];
+
 ?>
 <?php if (!$previous || $line['date'] != $previous['date']): ?>
 	</table>
-	<h3><?php echo $line['date'] ?></h3>
+	<h3><?=$this->html->link($line['date'], array(
+		'library' => 'li3_bot',
+		'controller' => 'logs', 'action' => 'view',
+		'date' => $line['date']
+	) + compact('channel')); ?></h3>
 	<table class="messages">
 <?php endif ?>
 
 <?=$this->view()->render(
 	array('element' => 'log_row'),
-	array('id' => $i, 'item' => $line) + compact('channel'),
+	array('id' => null, 'item' => $line) + compact('channel'),
 	array('library' => 'li3_bot')
 ); ?>
 <?php endforeach; ?>

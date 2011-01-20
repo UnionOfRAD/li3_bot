@@ -19,6 +19,7 @@
 		);
 	}
 ?>
+<?php if ($id): ?>
 <tr id="<?php echo $id ?>">
 	<td class="time">
 		<?=$this->html->link($item['time'], array(
@@ -28,6 +29,10 @@
 			'date' => isset($item['date']) ? $item['date'] : $date
 		) + compact('channel'), array('title' => 'context')); ?>
 	</td>
+<?php else: ?>
+<tr>
+	<td class="time"><?=$item['time'] ?></td>
+<?php endif; ?>
 	<td class="user" style="color: rgb(<?=implode(',' , $nickRgb($item['user']))?>);"><?=$item['user']?></td>
 	<td class="message"><?php echo $message; ?></td>
 </tr>
