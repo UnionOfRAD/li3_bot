@@ -18,7 +18,7 @@
 					  <li><?php echo $crumb['url'] ? $this->html->link($crumb['title'], $crumb['url']) : $crumb['title']; ?></li>
 				<?php endforeach; ?>
 				</ul>
-			<? endif; ?>
+			<?php endif; ?>
 		</div>
 		<div id="content">
 			<?php echo $this->content; ?>

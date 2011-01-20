@@ -60,5 +60,5 @@
 			?>
 		<?php endforeach; ?>
 		This bot is running with plugins <?php echo implode(', ', $plugins); ?>.
-	<? endif; ?>
+	<?php endif; ?>
 </div>

@@ -31,7 +31,7 @@
 	</table>
 	<h3><?php echo $line['date'] ?></h3>
 	<table class="messages">
-<? endif ?>
+<?php endif ?>
 
 <tr id="<?php echo $i ?>">
 	<td class="time">
