@@ -105,18 +105,17 @@ class Log extends \lithium\core\StaticObject {
 		}));
 		$results = array();
 
-		foreach ($dates as $date) {
+		foreach ($dates as $i => $date) {
 			$data = static::read($options['channel'], $date);
 
 			foreach ($data as $item) {
 				$match  = preg_match("#{$regex}#", $item['user']);
-				$match |= preg_match("#{$regex}#", $item['message']);
+				$match |= preg_match("#{$regex}#", $item['message'], $matches);
 
 				if (!$match) {
 					continue;
 				}
-				$item['date'] = $date;
-				$results[] = $item;
+				$results[] = $item + compact('date', 'matches');
 			}
 		}
 		return $results;

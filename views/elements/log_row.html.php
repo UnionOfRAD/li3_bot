@@ -13,6 +13,11 @@
 		'<a href="$1">$1</a>',
 		$h($item['message'])
 	);
+	if (isset($item['matches'])) {
+		$message = preg_replace(
+			'/(' . implode('|', $item['matches']) .')/', '<mark>$1</mark>', $message
+		);
+	}
 ?>
 <tr id="<?php echo $id ?>">
 	<td class="time">
