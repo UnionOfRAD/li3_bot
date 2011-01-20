@@ -85,7 +85,7 @@ class Irc extends \lithium\console\Command {
 
 	protected function _connect() {
 		$this->_nick("{$this->_nick} {$this->_password}");
-		$this->_user("{$this->_nick} {$this->_config['host']} Irc bot");
+		$this->_user("{$this->_nick} {$this->_config['host']} :bot");
 	}
 
 	protected function _process($line) {
