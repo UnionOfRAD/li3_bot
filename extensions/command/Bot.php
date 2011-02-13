@@ -8,25 +8,34 @@
 
 namespace li3_bot\extensions\command;
 
+use li3_bot\extensions\command\bot\Irc;
+
 /**
- * A bot class for running agaist various servers.
- * Includes an IRC and plugins.
- * `li3 Bot irc`
- *
+ * A set of commands to start and control the Lithium Bot.
  */
 class Bot extends \lithium\console\Command {
 
+	/**
+	 * The main method of the command.
+	 *
+	 * @return void
+	 */
 	public function run() {
 		return $this->irc();
 	}
 
 	/**
-	 * Run IRC bot
+	 * Starts the IRC bot, which will connect to servers and channels as
+	 * defined in `config/li3_bot.ini`. Will also run all active plugins.
 	 *
+	 * The IRC bot will enter a while loop and exit only upon user
+	 * interruption. To stop the bot hit `STRG+C`.
+	 *
+	 * @return boolean
 	 */
 	public function irc() {
-		$bot = new \li3_bot\extensions\command\bot\Irc();
-		return $bot->run();
+		$command = new Irc(array('request' => $this->request));
+		return $command->run();
 	}
 }
 
