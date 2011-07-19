@@ -16,6 +16,7 @@ The bot will join the configured channels and stay there until you hit `STRG`+`C
 The bot can extended through plugins. Such plugins are required to subclass `\li3_bot\extensions\command\bot\Plugin`. 
 
 Following plugins are already builtin and can be found in `extensions/command/bot/plugins`: 
+
  * Feed - pulls from RSS feeds.
  * Karma - maintains a karma highscore board.
  * Logging - logs channel messages. 
