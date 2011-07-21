@@ -8,7 +8,7 @@
 
 namespace li3_bot\extensions\command\bot;
 
-use \lithium\core\Libraries;
+use lithium\core\Libraries;
 
 class Irc extends \lithium\console\Command {
 
@@ -72,8 +72,7 @@ class Irc extends \lithium\console\Command {
 		if ($method[0] === '_') {
 			$value = empty($params) ? $this->{$method} : $params[0];
 			$command = strtoupper(ltrim($method, '_')) . " {$value}\r\n";
-
-			return $this->socket->write($command);
+			return fwrite($this->_resource, $command);
 		}
 	}
 
@@ -85,8 +84,9 @@ class Irc extends \lithium\console\Command {
 	}
 
 	protected function _connect() {
-		$this->_nick("{$this->_nick} {$this->_password}");
-		$this->_user("{$this->_nick} {$this->_config['host']} Irc bot");
+		$password = $this->_password ? "{$this->_password}" : null;
+		$this->_nick("{$this->_nick}{$password}");
+		$this->_user("{$this->_nick} {$this->_config['host']}");
 	}
 
 	protected function _process($line) {

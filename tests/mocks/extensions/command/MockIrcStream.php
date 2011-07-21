@@ -41,7 +41,7 @@ class MockIrcStream extends \lithium\net\socket\Stream {
 		return true;
 	}
 
-	public function send($message, array $options = array()) {
+	public function send($message = null, array $options = array()) {
 		return true;
 	}
 }

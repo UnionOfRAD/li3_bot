@@ -9,7 +9,6 @@
 namespace li3_bot\tests\cases\extensions\command\bot;
 
 use lithium\console\Request;
-use lithium\console\Response;
 use li3_bot\tests\mocks\extensions\command\bot\MockIrc;
 
 class IrcTest extends \lithium\test\Unit {
@@ -39,7 +38,7 @@ class IrcTest extends \lithium\test\Unit {
 		$result = $this->irc->response->output;
 		$this->assertTrue(strpos($result, $expected) !== false);
 
-		$expected = "NICK li3_bot\r\nUSER li3_bot localhost botts :li3_bot\r\n";
+		$expected = "NICK li3_bot\r\nUSER li3_bot localhost\r\n";
 		$result = fread($resource, 1024);
 		$this->assertEqual($expected, $result);
 	}
