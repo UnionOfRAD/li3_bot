@@ -77,16 +77,16 @@ class Irc extends \lithium\console\Command {
 	}
 
 	protected function _privmsg($command) {
-		if ($this->socket->write("PRIVMSG {$command}\r\n")) {
+		if (fwrite($this->_resource, "PRIVMSG {$command}\r\n")) {
 			$this->_process(":{$this->_nick}!@localhost PRIVMSG {$command}\r\n");
 			return true;
 		}
 	}
 
 	protected function _connect() {
-		$password = $this->_password ? "{$this->_password}" : null;
+		$password = $this->_password ? " {$this->_password}" : null;
 		$this->_nick("{$this->_nick}{$password}");
-		$this->_user("{$this->_nick} {$this->_config['host']}");
+		$this->_user("{$this->_nick} {$this->_config['host']} IRC BOT");
 	}
 
 	protected function _process($line) {
