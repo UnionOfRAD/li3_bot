@@ -8,12 +8,14 @@
 
 namespace li3_bot\tests\cases\models;
 
-use \li3_bot\models\Tell;
+use lithium\core\Libraries;
+use li3_bot\models\Tell;
+
 
 class TellTest extends \lithium\test\Unit {
 
 	public function setUp() {
-		Tell::$path = LITHIUM_APP_PATH . '/resources/tmp/tests/test_tells.ini';
+		Tell::$path = Libraries::get(true, 'resources') . '/tmp/tests/test_tells.ini';
 	}
 
 	public function tearDown() {
@@ -65,6 +67,6 @@ class TellTest extends \lithium\test\Unit {
 		$result = Tell::find('li');
 		$this->assertFalse($result);
 	}
-
 }
+
 ?>

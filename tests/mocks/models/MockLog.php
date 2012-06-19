@@ -8,10 +8,12 @@
 
 namespace li3_bot\tests\mocks\models;
 
+use lithium\core\Libraries;
+
 class MockLog extends \li3_bot\models\Log {
 
 	public static function __init() {
-		static::$path = LITHIUM_APP_PATH . '/resources/tmp/tests/logs';
+		static::$path = Libraries::get(true, 'resources') . '/tmp/tests/logs';
 		if (!is_dir(static::$path)) {
 			mkdir(static::$path, 0777, true);
 		}

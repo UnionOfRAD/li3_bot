@@ -8,12 +8,14 @@
 
 namespace li3_bot\models;
 
+use lithium\core\Libraries;
+
 class Karma extends \lithium\core\StaticObject {
 
 	public static $path = null;
 
 	public static function __init() {
-		static::$path = LITHIUM_APP_PATH . '/resources/bot/karmas.ini';
+		static::$path = Libraries::get(true, 'resources') . '/bot/karmas.ini';
 	}
 
 	public static function current($user) {

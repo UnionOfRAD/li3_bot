@@ -8,6 +8,8 @@
 
 namespace li3_bot\models;
 
+use lithium\core\Libraries;
+
 class Tell extends \lithium\core\StaticObject {
 
 	public static $path = null;
@@ -15,7 +17,7 @@ class Tell extends \lithium\core\StaticObject {
 	protected static $_tells = array();
 
 	public static function __init() {
-		static::$path = LITHIUM_APP_PATH . '/resources/bot/tells.ini';
+		static::$path = Libraries::get(true, 'resources') . '/bot/tells.ini';
 	}
 
 	public static function save($data = array()) {

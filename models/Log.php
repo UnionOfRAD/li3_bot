@@ -8,6 +8,7 @@
 
 namespace li3_bot\models;
 
+use lithium\core\Libraries;
 use DirectoryIterator;
 use Exception;
 
@@ -18,7 +19,7 @@ class Log extends \lithium\core\StaticObject {
 	protected static $_pattern = null;
 
 	public static function __init() {
-		static::$path = $path = LITHIUM_APP_PATH . '/resources/bot/logs';
+		static::$path = $path = Libraries::get(true, 'resources') . '/bot/logs';
 		static::$_pattern = '/^(?P<time>\d+:\d+(:\d+)?) : (?P<user>[^\s]+) : (?P<message>.*)/';
 
 		if (!is_dir($path)) {
