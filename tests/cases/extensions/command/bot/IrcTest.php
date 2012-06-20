@@ -38,7 +38,7 @@ class IrcTest extends \lithium\test\Unit {
 		$result = $this->irc->response->output;
 		$this->assertTrue(strpos($result, $expected) !== false);
 
-		$expected = "NICK li3_bot\r\nUSER li3_bot localhost\r\n";
+		$expected = "NICK li3_bot\r\nUSER li3_bot localhost IRC BOT\r\n";
 		$result = fread($resource, 1024);
 		$this->assertEqual($expected, $result);
 	}
