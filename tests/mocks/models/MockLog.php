@@ -14,9 +14,7 @@ class MockLog extends \li3_bot\models\Log {
 
 	public static function __init() {
 		static::$path = Libraries::get(true, 'resources') . '/tmp/tests/logs';
-		if (!is_dir(static::$path)) {
-			mkdir(static::$path, 0777, true);
-		}
+		static::$_pattern = '/^(?P<time>\d+:\d+(:\d+)?) : (?P<user>[^\s]+) : (?P<message>.*)/';
 	}
 }
 

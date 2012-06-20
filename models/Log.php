@@ -19,11 +19,11 @@ class Log extends \lithium\core\StaticObject {
 	protected static $_pattern = null;
 
 	public static function __init() {
-		static::$path = $path = Libraries::get(true, 'resources') . '/bot/logs';
-		static::$_pattern = '/^(?P<time>\d+:\d+(:\d+)?) : (?P<user>[^\s]+) : (?P<message>.*)/';
+		$resources = Libraries::get(true, 'resources');
+		static::$path = $path = $resources . '/bot/logs';
 
-		if (!is_dir($path)) {
-			throw new Exception("Logs directory at `{$path}` doesn't exist");
+		if (is_writable($resources) && !is_dir($path)) {
+			mkdir($path, 0777, true);
 		}
 		if (!is_readable($path)) {
 			throw new Exception("Logs directory at `{$path}` is not readable");
@@ -31,6 +31,8 @@ class Log extends \lithium\core\StaticObject {
 		if (!is_writable($path)) {
 			throw new Exception("Logs directory at `{$path}` is not writable");
 		}
+
+		static::$_pattern = '/^(?P<time>\d+:\d+(:\d+)?) : (?P<user>[^\s]+) : (?P<message>.*)/';
 	}
 
 	public static function save($data = null) {

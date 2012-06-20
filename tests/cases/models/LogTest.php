@@ -8,12 +8,20 @@
 
 namespace li3_bot\tests\cases\models;
 
+use lithium\core\Libraries;
 use li3_bot\tests\mocks\models\MockLog;
 
 class LogTest extends \lithium\test\Unit {
 
-	public function setUp() {
-		MockLog::__init();
+	public function skip() {
+		$resources = Libraries::get(true, 'resources');
+		$path = "{$resources}/tmp/tests/logs";
+
+		if (is_writable($resources) && !is_dir($path)) {
+			mkdir($path, 0777, true);
+		}
+
+		$this->skipIf(!is_writable($path), "Path `{$path}` is not writable.");
 	}
 
 	public function tearDown() {
@@ -21,12 +29,11 @@ class LogTest extends \lithium\test\Unit {
 	}
 
 	public function testSaveAndFind() {
-		$expected = true;
 		$result = MockLog::save(array(
 			'channel'=> '#li3', 'nick' => 'li3_bot',
 			'user' => 'gwoo', 'message' => 'the log message'
 		));
-		$this->assertEqual($expected, $result);
+		$this->assertTrue($result);
 
 		$expected = array('li3');
 		$result = MockLog::find('first');
