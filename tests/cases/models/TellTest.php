@@ -37,15 +37,13 @@ class TellTest extends \lithium\test\Unit {
 	}
 
 	public function testSave() {
-		$expected = true;
 		$result = Tell::save(array('lithium' => 'http://li3.rad-dev.org'));
-		$this->assertEqual($expected, $result);
+		$this->assertTrue($result);
 	}
 
 	public function testSaveTwoAndFindAll() {
-		$expected = true;
 		$result = Tell::save(array('lithium' => 'http://li3.rad-dev.org'));
-		$this->assertEqual($expected, $result);
+		$this->assertTrue($result);
 
 		$expected = array('lithium' => 'http://li3.rad-dev.org');
 		$result = Tell::find('all');
@@ -53,9 +51,8 @@ class TellTest extends \lithium\test\Unit {
 	}
 
 	public function testSaveAndFind() {
-		$expected = true;
 		$result = Tell::save(array('lithium' => 'http://li3.rad-dev.org'));
-		$this->assertEqual($expected, $result);
+		$this->assertTrue($result);
 
 		$expected = 'http://li3.rad-dev.org';
 		$result = Tell::find('lithium');
@@ -67,9 +64,8 @@ class TellTest extends \lithium\test\Unit {
 	}
 
 	public function testSaveDeleteFind() {
-		$expected = true;
 		$result = Tell::save(array('li' => 'the most rad php framework'));
-		$this->assertEqual($expected, $result);
+		$this->assertTrue($result);
 
 		Tell::delete('li');
 
