@@ -8,10 +8,12 @@
 
 namespace li3_bot\tests\mocks\models;
 
+use lithium\core\Libraries;
+
 class MockTell extends \li3_bot\models\Tell {
 
 	public static function __init() {
-		static::$path = LITHIUM_APP_PATH . '/resources/tmp/tests/test_tells.ini';
+		static::$path = Libraries::get(true, 'resources') . '/tmp/tests/test_tells.ini';
 	}
 }
 

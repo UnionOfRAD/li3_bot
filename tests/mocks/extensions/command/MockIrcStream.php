@@ -12,7 +12,7 @@ class MockIrcStream extends \lithium\net\socket\Stream {
 
 	protected $_data = null;
 
-	public function open() {
+	public function open(array $options = array()) {
 		$this->_resource = fopen('php://memory', 'w+');
 		return true;
 	}
