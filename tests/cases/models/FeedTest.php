@@ -45,6 +45,6 @@ class FeedTest extends \lithium\test\Unit {
 		$result = MockFeed::find('all', array('ping' => false, 'name' => 'lithium'));
 		$this->assertEqual($expected, count($result));
 	}
-
 }
+
 ?>
