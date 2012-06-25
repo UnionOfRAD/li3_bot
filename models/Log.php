@@ -43,8 +43,8 @@ class Log extends \lithium\core\StaticObject {
 			mkdir($dir);
 		}
 
-		$colorCodes = '\x2\x3\x36\x311\x313';
-		$data['message'] = preg_replace("/[{$colorCodes}]/", null, $data['message']);
+		$colorCodes = '[\x02\x1F\x0F\x16]|\x03(\d\d?(,\d\d?)?)?';
+		$data['message'] = preg_replace("/{$colorCodes}/", null, $data['message']);
 
 		$line = date('H:i:s') . " : {$data['user']} : {$data['message']}\n";
 		file_put_contents($path, $line, FILE_APPEND);
