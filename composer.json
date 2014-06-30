@@ -1,0 +1,12 @@
+{
+	"name": "unionofrad/li3_bot",
+	"type": "lithium-library",
+	"description": "An IRC bot for your Lithium application.",
+	"keywords": ["irc", "bot", "lithium", "li3"],
+	"homepage": "https://github.com/UnionOfRAD/li3_bot",
+	"license": "BSD-3-clause",
+	"require": {
+		"php": ">=5.3",
+		"composer/installers": "*"
+	}
+}
