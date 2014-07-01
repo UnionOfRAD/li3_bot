@@ -9,6 +9,7 @@
 namespace li3_bot\extensions\command\bot;
 
 use lithium\core\Libraries;
+use lithium\core\Environment;
 
 class Irc extends \lithium\console\Command {
 
@@ -35,21 +36,11 @@ class Irc extends \lithium\console\Command {
 
 	public function _init() {
 		parent::_init();
-
-		$files = array(
-			Libraries::get(true, 'path') . '/config/li3_bot.ini',
-			Libraries::get('li3_bot', 'path') . '/config/li3_bot.ini',
-		);
-
-		foreach ($files as $file) {
-			if (file_exists($file)) {
-				$this->_config += parse_ini_file($file);
-				break;
-			}
-		}
+		$this->_config = Environment::get(true, 'bot');
 
 		foreach ($this->_config as $key => $value) {
 			$key = "_{$key}";
+
 			if (isset($this->{$key}) && $key !== '_classes') {
 				$this->{$key} = $value;
 				if ($value && strpos($value, ',') !== false) {
@@ -57,7 +48,10 @@ class Irc extends \lithium\console\Command {
 				}
 			}
 		}
-		$this->socket = $this->_instance('socket', $this->_config);
+		$this->socket = $this->_instance('socket', array(
+			'host' => $this->_config['host'],
+			'port' => $this->_config['port']
+		));
 	}
 
 	public function run() {

@@ -10,10 +10,9 @@ namespace li3_bot\models;
 
 use lithium\util\String;
 use lithium\util\Collection;
+use lithium\core\Environment;
 
 class Feed extends \lithium\core\StaticObject {
-
-	public static $path = null;
 
 	public static $format;
 
@@ -23,11 +22,7 @@ class Feed extends \lithium\core\StaticObject {
 
 	protected static $_firstPing = true;
 
-	protected static $_config = array();
-
 	public static function init() {
-		$plugin = dirname(__DIR__);
-		static::$path = $plugin . '/config/li3_bot.ini';
 		static::$format = join(' ', array(
 			"\x02{:name}\x02", "\x0311∆\x03", "{:title}",
 			"\x0311∆\x03", "{:description}", "\x036∆\x03",
@@ -35,17 +30,12 @@ class Feed extends \lithium\core\StaticObject {
 		));
 	}
 
-	public static function config() {
-		if (empty(static::$_config)) {
-			static::$_config = parse_ini_file(static::$path, true);
-		}
-		return static::$_config;
-	}
-
 	public static function find($type = 'first', $options = array()) {
+		$config = Environment::get(true, 'bot');
+
 		$defaults = array(
 			'ping' => true,
-			'name' => !empty(static::$_config['feeds'][$type]) ? $type : null,
+			'name' => !empty($config['feeds'][$type]) ? $type : null,
 			'path' => null,
 			'limit' => ($type === 'new' ? 1 : 4)
 		);
@@ -54,11 +44,11 @@ class Feed extends \lithium\core\StaticObject {
 		if (empty($options['name'])) {
 			return array();
 		}
-		if (!empty(static::$_config['feeds'][$type])) {
+		if (!empty($config['feeds'][$type])) {
 			$options['name'] = $type;
 		}
-		if (empty($options['path']) && !empty(static::$_config['feeds'][$options['name']])) {
-			$options['path'] = static::$_config['feeds'][$options['name']];
+		if (empty($options['path']) && !empty($config['feeds'][$options['name']])) {
+			$options['path'] = $config['feeds'][$options['name']];
 		}
 		if (empty($options['path'])) {
 			return array();

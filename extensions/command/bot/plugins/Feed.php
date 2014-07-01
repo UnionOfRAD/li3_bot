@@ -19,6 +19,13 @@ class Feed extends \li3_bot\extensions\command\bot\Plugin {
 		'response' => '\lithium\console\Response',
 	);
 
+	protected $_config = array();
+
+	public function __construct($config) {
+		$this->_config = $config;
+		parent::__construct($config);
+	}
+
 	/**
 	 * One each ping find new feeds
 	 *
@@ -27,8 +34,8 @@ class Feed extends \li3_bot\extensions\command\bot\Plugin {
 	public function poll() {
 		$model = $this->_classes['model'];
 		$responses = array();
-		$config = $model::config();
-		foreach ($config['feeds'] as $name => $path) {
+
+		foreach ($this->_config['feeds'] as $name => $path) {
 			$responses = array_merge($responses, $model::find('new', compact('name', 'path')));
 		}
 		return $responses;

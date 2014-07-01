@@ -13,6 +13,7 @@ use \lithium\util\String;
 class Weather extends \lithium\core\StaticObject {
 
 	static protected $_search  = 'http://api.wunderground.com/auto/wui/geo/GeoLookupXML/index.xml?query=';
+
 	static protected $_station = 'http://api.wunderground.com/auto/wui/geo/WXCurrentObXML/index.xml?query=';
 
 	static public function find($type, $location) {
