@@ -19,15 +19,25 @@ class Logging extends \li3_bot\extensions\command\bot\Plugin {
 		'response' => '\lithium\console\Response'
 	);
 
+	protected $_config = array();
+
+	public function __construct($config) {
+		$this->_config = $config;
+		parent::__construct($config);
+	}
+
 	/**
-	 * log messages
+	 * Logs messages. Will log only configured channels.
 	 *
 	 * @param array data
-	 * @return array
+	 * @return void
 	 */
 	public function process($data) {
 		$model = $this->_classes['model'];
-		$model::save($data);
+
+		if (in_array($data['channel'], $this->_config['channels'])) {
+			$model::save($data);
+		}
 	}
 }
 

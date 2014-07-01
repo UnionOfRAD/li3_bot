@@ -43,7 +43,6 @@ class Log extends \lithium\core\StaticObject {
 			mkdir($dir);
 		}
 
-
 		$colorCodes = '[\x02\x1F\x0F\x16]|\x03(\d\d?(,\d\d?)?)?';
 		$data['message'] = preg_replace("/{$colorCodes}/", null, $data['message']);
 
