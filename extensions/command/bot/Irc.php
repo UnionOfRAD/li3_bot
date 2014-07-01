@@ -36,8 +36,18 @@ class Irc extends \lithium\console\Command {
 	public function _init() {
 		parent::_init();
 
-		$plugin = dirname(dirname(dirname(__DIR__)));
-		$this->_config += parse_ini_file($plugin . '/config/li3_bot.ini');
+		$files = array(
+			Libraries::get(true, 'path') . '/config/li3_bot.ini',
+			Libraries::get('li3_bot', 'path') . '/config/li3_bot.ini',
+		);
+
+		foreach ($files as $file) {
+			if (file_exists($file)) {
+				$this->_config += parse_ini_file($file);
+				break;
+			}
+		}
+
 		foreach ($this->_config as $key => $value) {
 			$key = "_{$key}";
 			if (isset($this->{$key}) && $key !== '_classes') {
