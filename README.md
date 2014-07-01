@@ -1,3 +1,5 @@
+# li3 bot
+
 ##  About
 
 `li3_bot` is an IRC bot and webinterface. 
