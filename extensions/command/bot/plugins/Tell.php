@@ -51,7 +51,7 @@ class Tell extends \li3_bot\extensions\command\bot\Plugin {
 			$words = preg_split("/[\s]/", $message, 4);
 
 			if ($words[0] == '~tell') {
-				if ($words[2] == 'about') {
+				if (count($words) > 3 && $words[2] == 'about') {
 					$key = $words[3];
 					$to = $words[1];
 				}
