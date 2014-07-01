@@ -31,7 +31,7 @@ class Feed extends \lithium\core\StaticObject {
 	}
 
 	public static function find($type = 'first', $options = array()) {
-		$config = Environment::get(true, 'bot');
+		$config = Environment::get('bot');
 
 		$defaults = array(
 			'ping' => true,

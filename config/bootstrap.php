@@ -19,9 +19,9 @@ foreach ($files as $file) {
 		break;
 	}
 }
-Environment::set(true, array(
-	'bot' => $config
-));
+Environment::set('development', array('bot' => $config));
+Environment::set('staging', array('bot' => $config));
+Environment::set('production', array('bot' => $config));
 
 
 ?>

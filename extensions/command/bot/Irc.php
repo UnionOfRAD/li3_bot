@@ -36,7 +36,7 @@ class Irc extends \lithium\console\Command {
 
 	public function _init() {
 		parent::_init();
-		$this->_config = Environment::get(true, 'bot');
+		$this->_config = Environment::get('bot');
 
 		foreach ($this->_config as $key => $value) {
 			$key = "_{$key}";
