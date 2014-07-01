@@ -18,7 +18,7 @@ class Log extends \lithium\core\StaticObject {
 
 	protected static $_pattern = null;
 
-	public static function __init() {
+	public static function init() {
 		$resources = Libraries::get(true, 'resources');
 		static::$path = $path = $resources . '/bot/logs';
 
@@ -142,5 +142,7 @@ class Log extends \lithium\core\StaticObject {
 		return $path;
 	}
 }
+
+Log::init();
 
 ?>

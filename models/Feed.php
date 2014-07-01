@@ -25,7 +25,7 @@ class Feed extends \lithium\core\StaticObject {
 
 	protected static $_config = array();
 
-	public static function __init() {
+	public static function init() {
 		$plugin = dirname(__DIR__);
 		static::$path = $plugin . '/config/li3_bot.ini';
 		static::$format = join(' ', array(
@@ -144,5 +144,7 @@ class Feed extends \lithium\core\StaticObject {
 		static::$_firstPing = true;
 	}
 }
+
+Feed::init();
 
 ?>

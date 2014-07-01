@@ -16,7 +16,7 @@ class Tell extends \lithium\core\StaticObject {
 
 	protected static $_tells = array();
 
-	public static function __init() {
+	public static function init() {
 		static::$path = Libraries::get(true, 'resources') . '/bot/tells.ini';
 	}
 
@@ -85,5 +85,7 @@ class Tell extends \lithium\core\StaticObject {
 		return join("\n", $result);
 	}
 }
+
+Tell::init();
 
 ?>

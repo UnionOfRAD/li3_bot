@@ -14,7 +14,7 @@ class Karma extends \lithium\core\StaticObject {
 
 	public static $path = null;
 
-	public static function __init() {
+	public static function init() {
 		static::$path = Libraries::get(true, 'resources') . '/bot/karmas.ini';
 	}
 
@@ -66,5 +66,7 @@ class Karma extends \lithium\core\StaticObject {
 		return file_put_contents(static::$path, implode("\n", $lines));
 	}
 }
+
+Karma::init();
 
 ?>
