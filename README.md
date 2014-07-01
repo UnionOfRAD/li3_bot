@@ -1,4 +1,4 @@
-# li3 bot
+# li₃ bot
 
 ##  About
 
