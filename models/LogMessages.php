@@ -21,6 +21,7 @@ class LogMessages extends \lithium\data\Model {
 		if ($cached = Cache::read('default', $cacheKey)) {
 			return $cached;
 		}
+
 		$query = [
 			'fields' => [
 				"DISTINCT(DATE(created)) as created",
@@ -55,42 +56,49 @@ class LogMessages extends \lithium\data\Model {
 				$date->add($interval);
 			}
 		}
+		$totals = static::totalMessages($channel, $year);
 
-		$start = time();
-		$calcCount = true;
 		foreach ($results->data() as $result) {
-			if ($calcCount && (time() - $start) > 15) {
-				$calcCount = false;
-			}
 			$date = DateTime::createFromFormat('Y-m-d', $result['created']);
+			$count = null;
+
+			if (isset($totals[$date->format('Y-m-d')])) {
+				$count = $totals[$date->format('Y-m-d')];
+			}
 
 			$data[$date->format('Y')][$date->format('n')][$date->format('j')] = [
-				'count' => $calcCount ? static::totalMessages($channel, $date->format('Y-m-d')) : 20,
+				'count' => $count,
 				'date' => $date
 			];
 		}
-		if ($calcCount) {
-			Cache::write('default', $cacheKey, $data, '+12 hours');
-		}
+
+		Cache::write('default', $cacheKey, $data, '+12 hours');
 		return $data;
 	}
 
-	public static function totalMessages($channel, $date) {
-		$cacheKey = 'li3_bot_log_messages_total_messages_' . md5($channel .  $date);
-
-		if (($cached = Cache::read('default', $cacheKey)) !== null) {
-			return $cached;
-		}
-		$result = static::find('count', [
+	public static function totalMessages($channel, $year) {
+		$results = static::find('all', [
+			'fields' => [
+				'DATE(CREATED) as date',
+				'COUNT(id) as count',
+			],
 			'conditions' => [
 				'channel' => $channel,
-				"DATE(created)" => $date
+				"YEAR(created)" => $year
+			],
+			'group' => [
+				'DATE(created)'
 			]
 		]);
-		if (date('Y-m-d') != $date) { // Do not cache ongoing days.
-			Cache::write('default', $cacheKey, $result, Cache::PERSIST);
+
+		$data = [];
+		foreach ($results as $result) {
+			if (!$result) {
+				continue;
+			}
+			$data[$result->date] = $result->count;
 		}
-		return $result;
+		return $data;
 	}
 
 	public static function day($channel, $date) {
