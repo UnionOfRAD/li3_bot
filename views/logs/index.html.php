@@ -6,7 +6,7 @@
 //
 $heatColor = function($v, $min, $max) {
 	$process = function($n) {
-		$lightness = 0.75;
+		$lightness = 0.55;
 
 		// adjust lightness
 		$n = floor($n + $lightness * (256 - $n));
