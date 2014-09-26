@@ -8,12 +8,12 @@
 
 namespace li3_bot\controllers;
 
-use li3_bot\models\Log;
+use li3_bot\models\Logs;
 
 class LogsController extends \lithium\action\Controller {
 
 	public function index() {
-		$channels = Log::find('all');
+		$channels = Logs::find('all');
 		$logs = null;
 
 		$breadcrumbs[] = array(
@@ -26,7 +26,7 @@ class LogsController extends \lithium\action\Controller {
 				'title' => "#{$channel}",
 				'url' => null
 			);
-			$logs = Log::find('all', compact('channel'));
+			$logs = Logs::find('all', compact('channel'));
 
 			natsort($logs);
 			$logs = array_reverse($logs);
@@ -53,16 +53,16 @@ class LogsController extends \lithium\action\Controller {
 			'url' => null
 		);
 
-		$channels = Log::find('all');
-		$log = Log::read($channel, $date);
+		$channels = Logs::find('all');
+		$log = Logs::read($channel, $date);
 
 		$previous = date('Y-m-d', strtotime($date) - (60 * 60 * 24));
 		$next = date('Y-m-d', strtotime($date) + (60 * 60 * 24));
 
-		if (!Log::exists($channel, $previous)) {
+		if (!Logs::exists($channel, $previous)) {
 			$previous = null;
 		}
-		if (!Log::exists($channel, $next)) {
+		if (!Logs::exists($channel, $next)) {
 			$next = null;
 		}
 		return compact('channels', 'channel', 'log', 'date', 'breadcrumbs', 'previous', 'next');

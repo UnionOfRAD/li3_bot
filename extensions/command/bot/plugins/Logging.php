@@ -15,7 +15,7 @@ namespace li3_bot\extensions\command\bot\plugins;
 class Logging extends \li3_bot\extensions\command\bot\Plugin {
 
 	protected $_classes = array(
-		'model' => '\li3_bot\models\Log',
+		'model' => '\li3_bot\models\Logs',
 		'response' => '\lithium\console\Response'
 	);
 

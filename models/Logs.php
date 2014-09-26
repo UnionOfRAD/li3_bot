@@ -12,7 +12,7 @@ use lithium\core\Libraries;
 use DirectoryIterator;
 use Exception;
 
-class Log extends \lithium\core\StaticObject {
+class Logs extends \lithium\core\StaticObject {
 
 	public static $path = null;
 
@@ -116,6 +116,6 @@ class Log extends \lithium\core\StaticObject {
 	}
 }
 
-Log::init();
+Logs::init();
 
 ?>
