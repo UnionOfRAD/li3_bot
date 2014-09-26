@@ -10,7 +10,7 @@
 
 	$message = preg_replace(
 		'@(https?://([-\w\.]+)+(:\d+)?(/([-\w/_\.,#\(\)={}\+\?]*(\?\S+)?)?)?)@',
-		'<a href="$1">$1</a>',
+		'<a href="$1" rel="nofollow">$1</a>',
 		$h($item->message)
 	);
 ?>
