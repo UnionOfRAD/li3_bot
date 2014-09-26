@@ -5,7 +5,7 @@
 	<?php foreach ($messages as $i => $line): ?>
 		<?=$this->view()->render(
 			array('element' => 'message'),
-			array('id' => $i, 'item' => $line) + compact('channel', 'date'),
+			array('id' => $i, 'item' => $line) + compact('channel', 'date', 'rewriters'),
 			array('library' => 'li3_bot')
 		); ?>
 	<?php endforeach; ?>

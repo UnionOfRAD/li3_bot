@@ -1,4 +1,5 @@
 <?php
+
 	$nickRgb = function($nick) {
 		$hash = abs(crc32($nick));
 
@@ -8,9 +9,18 @@
 		return $rgb;
 	};
 
-	$message = preg_replace(
+	$message = preg_replace_callback(
 		'@(https?://([-\w\.]+)+(:\d+)?(/([-\w/_\.,#\(\)={}\+\?]*(\?\S+)?)?)?)@',
-		'<a href="$1" rel="nofollow">$1</a>',
+		function($matches) use ($rewriters) {
+			$outer = $matches[0];
+
+			foreach ($rewriters as $pattern => $rewriter) {
+				if (preg_match('#' . $pattern. '#', $outer, $m)) {
+					return $rewriter($m[0], $outer);
+				}
+			}
+			return '<a href="' . $inner . '" rel="nofollow">' . $outer . '</a>';
+		},
 		$h($item->message)
 	);
 ?>

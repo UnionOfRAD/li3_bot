@@ -8,6 +8,8 @@
 
 namespace li3_bot\controllers;
 
+use lithium\core\Libraries;
+
 use li3_bot\models\LogMessages;
 
 class LogsController extends \lithium\action\Controller {
@@ -68,7 +70,7 @@ class LogsController extends \lithium\action\Controller {
 		);
 		$breadcrumbs[] = array(
 			'title' => "#{$channel}",
-			'url' => $baseUrl + array('action' => 'index') + compact('channel')
+			'url' => null
 		);
 		$breadcrumbs[] = array(
 			'title' => $year,
@@ -93,7 +95,9 @@ class LogsController extends \lithium\action\Controller {
 		if (!LogMessages::hasDay($channel, $next)) {
 			$next = null;
 		}
-		return compact('channel', 'messages', 'date', 'breadcrumbs', 'previous', 'next');
+		$rewriters = Libraries::get('li3_bot', 'rewriters');
+
+		return compact('channel', 'messages', 'date', 'breadcrumbs', 'previous', 'next', 'rewriters');
 	}
 }
 
