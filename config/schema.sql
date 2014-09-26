@@ -1,10 +1,30 @@
 
-CREATE TABLE IF NOT EXISTS `log_messages` (
-	`id` INTEGER NOT NULL PRIMARY KEY,
-	`channel` VARCHAR (255) NOT NULL,
-	`user` VARCHAR (255) NOT NULL,
-	`message` TEXT NOT NULL,
-	`created` DATETIME NOT NULL
-);
-CREATE INDEX `idx_created` ON `log_messages` (`created` ASC);
-CREATE INDEX `idx_channel` ON `log_messages` (`channel` ASC);
+-- Create syntax for TABLE 'karma'
+CREATE TABLE `karma` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user` varchar(250) NOT NULL DEFAULT '',
+  `score` int(10) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Create syntax for TABLE 'log_messages'
+CREATE TABLE `log_messages` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `channel` varchar(255) NOT NULL,
+  `user` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  `created` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_created` (`created`),
+  KEY `idx_channel` (`channel`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Create syntax for TABLE 'tells'
+CREATE TABLE `tells` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `key` varchar(100) NOT NULL DEFAULT '',
+  `value` text NOT NULL,
+  `created` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
