@@ -40,9 +40,7 @@ class LogMessages extends \lithium\data\Model {
 			$date = DateTime::createFromFormat('Y-m-d', $result['created']);
 			$years[] = $date->format('Y');
 		}
-		$years = array_unique($years);
-
-		foreach ($years as $year) {
+		foreach (array_unique($years) as $year) {
 			// Go through each day of the year and add it..
 			$date = new DateTime("$year-01-01");
 			$interval = new DateInterval('P1D');
@@ -57,25 +55,42 @@ class LogMessages extends \lithium\data\Model {
 				$date->add($interval);
 			}
 		}
+
+		$start = time();
+		$calcCount = true;
 		foreach ($results->data() as $result) {
+			if ($calcCount && (time() - $start) > 15) {
+				$calcCount = false;
+			}
 			$date = DateTime::createFromFormat('Y-m-d', $result['created']);
 
 			$data[$date->format('Y')][$date->format('n')][$date->format('j')] = [
-				'count' => static::totalMessages($channel, $date->format('Y-m-d')),
+				'count' => $calcCount ? static::totalMessages($channel, $date->format('Y-m-d')) : 20,
 				'date' => $date
 			];
 		}
-		Cache::write('default', $cacheKey, $data, '+12 hours');
+		if ($calcCount) {
+			Cache::write('default', $cacheKey, $data, '+12 hours');
+		}
 		return $data;
 	}
 
 	public static function totalMessages($channel, $date) {
-		return static::find('count', [
+		$cacheKey = 'li3_bot_log_messages_total_messages_' . md5($channel .  $date);
+
+		if (($cached = Cache::read('default', $cacheKey)) !== null) {
+			return $cached;
+		}
+		$result = static::find('count', [
 			'conditions' => [
 				'channel' => $channel,
 				"DATE(created)" => $date
 			]
 		]);
+		if (date('Y-m-d') != $date) { // Do not cache ongoing days.
+			Cache::write('default', $cacheKey, $result, Cache::PERSIST);
+		}
+		return $result;
 	}
 
 	public static function day($channel, $date) {
