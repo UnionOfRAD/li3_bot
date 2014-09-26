@@ -8,12 +8,12 @@
 
 namespace li3_bot\controllers;
 
-use li3_bot\models\Tell;
+use li3_bot\models\Tells;
 
 class TellsController extends \lithium\action\Controller {
 
 	public function index() {
-		$tells = Tell::find('all');
+		$tells = Tells::find('all');
 		return compact('tells');
 	}
 }

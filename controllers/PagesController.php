@@ -9,7 +9,7 @@
 namespace li3_bot\controllers;
 
 use li3_bot\models\Logs;
-use li3_bot\models\Tell;
+use li3_bot\models\Tells;
 use li3_bot\models\Karma;
 use lithium\core\Libraries;
 
@@ -17,7 +17,7 @@ class PagesController extends \lithium\action\Controller {
 
 	public function home() {
 		$channels = Logs::find('all');
-		$tells = Tell::recent();
+		$tells = Tells::recent();
 		$karmas = Karma::highscore();
 		$plugins = Libraries::locate('command.bot.plugins');
 

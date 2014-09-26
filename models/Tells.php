@@ -10,7 +10,7 @@ namespace li3_bot\models;
 
 use lithium\core\Libraries;
 
-class Tell extends \lithium\core\StaticObject {
+class Tells extends \lithium\core\StaticObject {
 
 	public static $path = null;
 
@@ -86,6 +86,6 @@ class Tell extends \lithium\core\StaticObject {
 	}
 }
 
-Tell::init();
+Tells::init();
 
 ?>

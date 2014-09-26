@@ -9,8 +9,7 @@
 namespace li3_bot\tests\cases\models;
 
 use lithium\core\Libraries;
-use li3_bot\models\Tell;
-
+use li3_bot\models\Tells;
 
 class TellTest extends \lithium\test\Unit {
 
@@ -26,52 +25,52 @@ class TellTest extends \lithium\test\Unit {
 	}
 
 	public function setUp() {
-		Tell::$path = Libraries::get(true, 'resources') . '/tmp/tests/test_tells.ini';
+		Tells::$path = Libraries::get(true, 'resources') . '/tmp/tests/test_tells.ini';
 	}
 
 	public function tearDown() {
-		Tell::reset();
-		if (file_exists(Tell::$path)) {
-			unlink(Tell::$path);
+		Tells::reset();
+		if (file_exists(Tells::$path)) {
+			unlink(Tells::$path);
 		}
 	}
 
 	public function testSave() {
-		$result = Tell::save(array('lithium' => 'http://li3.rad-dev.org'));
+		$result = Tells::save(array('lithium' => 'http://li3.rad-dev.org'));
 		$this->assertTrue($result);
 	}
 
 	public function testSaveTwoAndFindAll() {
-		$result = Tell::save(array('lithium' => 'http://li3.rad-dev.org'));
+		$result = Tells::save(array('lithium' => 'http://li3.rad-dev.org'));
 		$this->assertTrue($result);
 
 		$expected = array('lithium' => 'http://li3.rad-dev.org');
-		$result = Tell::find('all');
+		$result = Tells::find('all');
 		$this->assertEqual($expected, $result);
 	}
 
 	public function testSaveAndFind() {
-		$result = Tell::save(array('lithium' => 'http://li3.rad-dev.org'));
+		$result = Tells::save(array('lithium' => 'http://li3.rad-dev.org'));
 		$this->assertTrue($result);
 
 		$expected = 'http://li3.rad-dev.org';
-		$result = Tell::find('lithium');
+		$result = Tells::find('lithium');
 		$this->assertEqual($expected, $result);
 
 		$expected = 'http://li3.rad-dev.org';
-		$result = Tell::find();
+		$result = Tells::find();
 		$this->assertEqual($expected, $result);
 	}
 
 	public function testSaveDeleteFind() {
-		$result = Tell::save(array('li' => 'the most rad php framework'));
+		$result = Tells::save(array('li' => 'the most rad php framework'));
 		$this->assertTrue($result);
 
-		Tell::delete('li');
+		Tells::delete('li');
 
-		Tell::reset();
+		Tells::reset();
 
-		$result = Tell::find('li');
+		$result = Tells::find('li');
 		$this->assertFalse($result);
 	}
 }

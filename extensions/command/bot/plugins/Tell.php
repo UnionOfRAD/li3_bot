@@ -17,7 +17,7 @@ use \lithium\util\String;
 class Tell extends \li3_bot\extensions\command\bot\Plugin {
 
 	protected $_classes = array(
-		'model' => '\li3_bot\models\Tell',
+		'model' => '\li3_bot\models\Tells',
 		'response' => '\lithium\console\Response'
 	);
 
