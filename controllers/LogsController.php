@@ -67,16 +67,6 @@ class LogsController extends \lithium\action\Controller {
 		}
 		return compact('channels', 'channel', 'log', 'date', 'breadcrumbs', 'previous', 'next');
 	}
-
-	public function search() {
-		$channel = $this->request->channel;
-		$query = $this->request->query['query'];
-
-		$log = Log::search($query, array(
-			'channel' => $this->request->channel
-		));
-		return compact('log', 'channel', 'query');
-	}
 }
 
 ?>

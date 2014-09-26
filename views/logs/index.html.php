@@ -10,17 +10,6 @@
 	</ul>
 <?php else: ?>
 	<?php $this->title("Logs for channel #{$channel}"); ?>
-	<?=$this->form->create(null, array(
-		'url' => "/bot/logs/search/{$channel}",
-		'class' => 'search',
-		'method' => 'get'
-	)) ?>
-	<?=$this->form->field('query', array(
-		'type' => 'search',
-		'placeholder' => 'regex',
-		'label' => 'Search'
-	)); ?>
-	<?=$this->form->end(); ?>
 	<ul>
 	  <?php foreach ((array) $logs as $date): ?>
 		<li>

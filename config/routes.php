@@ -8,9 +8,6 @@ Router::connect('/bot', array(
 Router::connect('/bot/logs', array(
 	'library' => 'li3_bot', 'controller' => 'logs', 'action' => 'index'
 ));
-Router::connect('/bot/logs/search/{:channel}', array(
-	'library' => 'li3_bot', 'controller' => 'logs', 'action' => 'search'
-));
 Router::connect('/bot/logs/{:channel}', array(
 	'library' => 'li3_bot', 'controller' => 'logs', 'action' => 'index'
 ));

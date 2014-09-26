@@ -100,33 +100,6 @@ class Log extends \lithium\core\StaticObject {
 		return $results;
 	}
 
-	public static function search($regex, array $options = array()) {
-		$default = array('channel' => null);
-		$options += $default;
-
-		$path = static::path($options['channel']);
-
-		$dates = array_values(array_filter(scandir($path), function ($file) {
-			return $file[0] != '.';
-		}));
-		$results = array();
-
-		foreach ($dates as $i => $date) {
-			$data = static::read($options['channel'], $date);
-
-			foreach ($data as $item) {
-				$match  = preg_match("#{$regex}#", $item['user']);
-				$match |= preg_match("#{$regex}#", $item['message'], $matches);
-
-				if (!$match) {
-					continue;
-				}
-				$results[] = $item + compact('date', 'matches');
-			}
-		}
-		return $results;
-	}
-
 	public static function exists($channel, $date = null) {
 		$path = static::path($channel, $date);
 
