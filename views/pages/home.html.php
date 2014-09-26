@@ -11,6 +11,8 @@ $nickRgb = function($nick) {
 
 ?>
 <article class="home">
+	<h1 class="h-alpha">IRC Bot</h1>
+
 	<section class="logs">
 		<h1 class="h-beta">Channel Logs</h1>
 		<?php if ($channels): ?>
@@ -19,6 +21,7 @@ $nickRgb = function($nick) {
 					 <li><?php echo $this->html->link("#{$channel}", array(
 							'library' => 'li3_bot',
 							'controller' => 'logs', 'action' => 'index',
+							'year' => date('Y')
 					) + compact('channel')); ?></li>
 				<?php endforeach; ?>
 			</ul>
@@ -30,15 +33,19 @@ $nickRgb = function($nick) {
 	<section class="tells">
 		<h1 class="h-beta">Most Recent Tells</h1>
 		<?php if ($tells): ?>
-			<dl class="tells">
-			<?php foreach ($tells as $key => $value): ?>
-				<dt><?php echo $key ?></dt><dd><?php echo $value ?></dd>
+			<table class="tells">
+			<?php foreach ($tells as $item): ?>
+				<tr>
+					<td><?= $item->key ?>
+					<td><?= $item->value ?></dd>
 			<?php endforeach; ?>
-			</dl>
+			</table>
+			<p class="view-all-tells">
 			[<?php echo $this->html->link('View all tells…', array(
 				'library' => 'li3_bot',
 				'controller' => 'tells', 'action' => 'index'
 			)); ?>]
+			</p>
 		<?php else: ?>
 			No tells, yet.
 		<?php endif; ?>
@@ -48,31 +55,15 @@ $nickRgb = function($nick) {
 		<h1 class="h-beta">Karma Highscore</h1>
 		<?php if ($karmas): ?>
 			<table class="karma">
+			<?php foreach ($karmas as $item): ?>
 				<tr>
-					<th>score</th>
-					<th>nick</th>
-				</tr>
-			<?php foreach ($karmas as $key => $value): ?>
-				<tr>
-					<td><?php echo $value ?></td>
-					<td class="user" style="color: rgb(<?=implode(',' , $nickRgb($key))?>);"><?php echo $key ?></td>
+					<td><?= $item->score ?></td>
+					<td class="user" style="color: rgb(<?=implode(',' , $nickRgb($item->user))?>);"><?= $item->user ?></td>
 				</tr>
 			<?php endforeach; ?>
 			</table>
 		<?php else: ?>
 			No karma data.
-		<?php endif; ?>
-	</section>
-
-	<section class="plugins">
-		<?php if ($plugins): ?>
-			<?php foreach ($plugins as &$plugin): ?>
-				<?php
-					$plugin = explode('\\', $plugin);
-					$plugin = end($plugin);
-				?>
-			<?php endforeach; ?>
-			This bot is running with plugins <?php echo implode(', ', $plugins); ?>.
 		<?php endif; ?>
 	</section>
 </article>

@@ -9,7 +9,6 @@
 namespace li3_bot\extensions\command\bot;
 
 use lithium\core\Libraries;
-use lithium\core\Environment;
 
 class Irc extends \lithium\console\Command {
 
@@ -36,7 +35,7 @@ class Irc extends \lithium\console\Command {
 
 	public function _init() {
 		parent::_init();
-		$this->_config = Environment::get('bot');
+		$this->_config = Libraries::get('li3_bot');
 
 		foreach ($this->_config as $key => $value) {
 			$key = "_{$key}";
@@ -137,7 +136,7 @@ class Irc extends \lithium\console\Command {
 						}
 					break;
 
-					case '433': //Nick already registerd
+					case '433': // Nick already registerd
 						$this->out($msg);
 						$this->_nick = $this->_nick . '_';
 						$this->_connect();

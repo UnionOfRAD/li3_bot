@@ -8,65 +8,37 @@
 
 namespace li3_bot\models;
 
-use lithium\core\Libraries;
+class Karma extends \lithium\data\Model {
 
-class Karma extends \lithium\core\StaticObject {
-
-	public static $path = null;
-
-	public static function init() {
-		static::$path = Libraries::get(true, 'resources') . '/bot/karmas.ini';
-	}
+	protected $_meta = array(
+		'source' => 'karma'
+	);
 
 	public static function current($user) {
-		$data = static::_readIni();
+		$item = static::find('first', ['conditions' => compact('user')]);
 
-		if (isset($data[$user])) {
-			return $data[$user];
+		if (!$item) {
+			return 0;
 		}
-		return 0;
+		return $item->score;
 	}
 
 	public static function highscore() {
-		$data = static::_readIni();
-
-		arsort($data, SORT_NUMERIC);
-		return array_slice($data, 0, 10, true);
+		return static::find('all', [
+			'order' => ['score' => 'DESC'],
+			'limit' => 10
+		]);
 	}
 
 	public static function increment($user) {
-		$data = static::_readIni();
-
-		isset($data[$user]) ? $data[$user]++ : $data[$user] = 1;
-
-		return static::_writeIni($data);
+		$item = static::find('first', ['conditions' => compact('user')]);
+		return $item && $item->save(['score' => $item->score + 1]);
 	}
 
 	public static function decrement($user) {
-		$data = static::_readIni();
-
-		isset($data[$user]) ? $data[$user]-- : $data[$user] = 0;
-
-		return static::_writeIni($data);
-	}
-
-	protected static function _readIni() {
-		if (!file_exists(static::$path)) {
-			return array();
-		}
-		return parse_ini_file(static::$path);
-	}
-
-	protected static function _writeIni($data) {
-		$lines = array("[karmas]");
-
-		foreach ($data as $key => $value) {
-			$lines[] = "{$key}={$value}";
-		}
-		return file_put_contents(static::$path, implode("\n", $lines));
+		$item = static::find('first', ['conditions' => compact('user')]);
+		return $item && $item->save(['score' => $item->score > 0 ? $item->score - 1 : 0]);
 	}
 }
-
-Karma::init();
 
 ?>

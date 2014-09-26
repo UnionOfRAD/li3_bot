@@ -10,7 +10,7 @@ namespace li3_bot\models;
 
 use lithium\util\String;
 use lithium\util\Collection;
-use lithium\core\Environment;
+use lithium\core\Libraries;
 
 class Feed extends \lithium\core\StaticObject {
 
@@ -31,7 +31,7 @@ class Feed extends \lithium\core\StaticObject {
 	}
 
 	public static function find($type = 'first', $options = array()) {
-		$config = Environment::get('bot');
+		$config = Libraries::get('li3_bot');
 
 		$defaults = array(
 			'ping' => true,

@@ -43,7 +43,6 @@ class Tell extends \li3_bot\extensions\command\bot\Plugin {
 	public function process($data) {
 		$responses = $this->_responses;
 		$model = $this->_classes['model'];
-		$tells = $model::find('all');
 		$key = null;
 		extract($data);
 
@@ -66,12 +65,15 @@ class Tell extends \li3_bot\extensions\command\bot\Plugin {
 					));
 				}
 			}
-			if (!isset($tells[$key])) {
+			$tell = $model::find('first', [
+				'conditions' => compact('key')
+			]);
+			if (!$tell) {
 				/* Not catching unknown tells, those could as well be other commands. */
 				return;
 			}
 			return String::insert($responses['success'], array(
-				'user' => $to, 'tell' => $key, 'answer' => $tells[$key]
+				'user' => $to, 'tell' => $tell->key, 'answer' => $tell->value
 			));
 		}
 		if (stripos($message, $nick) !== false) {
@@ -85,26 +87,33 @@ class Tell extends \li3_bot\extensions\command\bot\Plugin {
 			}
 
 			if (!empty($words[2]) && $words[2] == 'is') {
-				if (isset($tells[$words[1]])) {
-					$answer = $tells[$words[1]];
+				$tell = $model::find('first', [
+					'conditions' => ['key' => $workds[1]]
+				]);
+				if ($tell) {
 					return String::insert($responses['known'], array(
-						'user' => $user, 'tell' => $words[1], 'answer' => $answer
+						'user' => $user, 'tell' => $tell->key, 'answer' => $tell->value
 					));
 				}
-				if ($model::save(array($words[1] => $words[3]))) {
+				$tell = $model::create(['key' => $words[1], 'value' => $words[3]]);
+
+				if ($tell->save()) {
 					return String::insert($responses['remember'], array(
-						'user' => $user, 'tell' => $words[1]
+						'user' => $user, 'tell' => $tell->key
 					));
 				}
 			}
 		}
 	}
 
-	protected function _forget($tell) {
+	protected function _forget($key) {
 		$model = $this->_classes['model'];
 		$response = $this->_responses['forget_unknown'];
 
-		if ($model::delete($tell)) {
+		$item = $model::find('first', [
+			'conditions' => compact('key')
+		]);
+		if ($item && $item->delete()) {
 			$response = $this->_responses['forgot'];
 		}
 		return $response;

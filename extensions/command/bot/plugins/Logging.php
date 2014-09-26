@@ -15,7 +15,7 @@ namespace li3_bot\extensions\command\bot\plugins;
 class Logging extends \li3_bot\extensions\command\bot\Plugin {
 
 	protected $_classes = array(
-		'model' => '\li3_bot\models\Logs',
+		'model' => '\li3_bot\models\LogMessages',
 		'response' => '\lithium\console\Response'
 	);
 
@@ -35,9 +35,19 @@ class Logging extends \li3_bot\extensions\command\bot\Plugin {
 	public function process($data) {
 		$model = $this->_classes['model'];
 
-		if (in_array($data['channel'], $this->_config['channels'])) {
-			$model::save($data);
+		if (!in_array($data['channel'], $this->_config['channels'])) {
+			return false;
 		}
+		$colorCodes = '[\x02\x1F\x0F\x16]|\x03(\d\d?(,\d\d?)?)?';
+		$data['message'] = preg_replace("/{$colorCodes}/", null, $data['message']);
+
+		$item = $model::create([
+			'channel' => $data['channel'],
+			'user' => $data['user'],
+			'message' => $data['message'],
+			'created' => date('Y-m-d H:i:s')
+		]);
+		return $item->save();
 	}
 }
 

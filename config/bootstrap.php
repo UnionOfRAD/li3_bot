@@ -6,22 +6,16 @@
  * @license       http://opensource.org/licenses/bsd-license.php The BSD License
  */
 
-use lithium\core\Environment;
 use lithium\core\Libraries;
 
-$files = array(
-	Libraries::get(true, 'path') . '/config/li3_bot.ini',
-	__DIR__ . '/li3_bot.ini',
-);
-foreach ($files as $file) {
-	if (file_exists($file)) {
-		$config = parse_ini_file($file);
-		break;
-	}
-}
-Environment::set('development', array('bot' => $config));
-Environment::set('staging', array('bot' => $config));
-Environment::set('production', array('bot' => $config));
-
+/**
+ * Setup default options.
+ */
+Libraries::add('li3_bot', array('bootstrap' => false) + Libraries::get('li3_bot') + array(
+	'host' => 'irc.freenode.net',
+	'port' => 6667,
+	'nick' => 'li3bot',
+	'channels' => ['#li3-bot']
+));
 
 ?>

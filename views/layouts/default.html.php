@@ -13,11 +13,9 @@
 			<h1>Lithium</h1>
 			<h2>Bot</h2>
 			<?php if (isset($breadcrumbs)): ?>
-				<ul class="crumbs">
-				<?php foreach ($breadcrumbs as $crumb): ?>
-					  <li><?php echo $crumb['url'] ? $this->html->link($crumb['title'], $crumb['url']) : $crumb['title']; ?></li>
-				<?php endforeach; ?>
-				</ul>
+				<?php echo $this->_view->render(
+					array('element' => 'crumbs'), ['data' => $breadcrumbs], array('library' => 'li3_bot')
+				); ?>
 			<?php endif; ?>
 		</div>
 		<div id="content">

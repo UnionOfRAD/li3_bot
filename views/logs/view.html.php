@@ -1,28 +1,28 @@
 <article class="logs-view">
-	<?php $this->title("Logs for {$channel} on {$date}"); ?>
+	<h1 class="h-alpha"><?= $this->title("#{$channel} Channel Logs for " . date('m/d/Y', strtotime($date))); ?></h1>
 
 	<table class="messages">
-	<?php foreach ($log as $i => $line): ?>
+	<?php foreach ($messages as $i => $line): ?>
 		<?=$this->view()->render(
-			array('element' => 'log_row'),
+			array('element' => 'message'),
 			array('id' => $i, 'item' => $line) + compact('channel', 'date'),
 			array('library' => 'li3_bot')
 		); ?>
 	<?php endforeach; ?>
 	</table>
 
-	<nav class="paging">
+	<nav class="nav-paging">
 		<?php if ($previous)
-			echo $this->html->link('&larr;', array(
+			echo $this->html->link('&larr; previous', array(
 				'library' => 'li3_bot', 'controller' => 'logs', 'action' => 'view',
 				'date' => $previous,
-			) + compact('channel'), array('class' => 'prev', 'escape' => false));
+			) + compact('channel'), array('rel' => 'prev', 'escape' => false));
 		?>
 		<?php if ($next)
-			echo $this->html->link('&rarr;', array(
+			echo $this->html->link('next &rarr;', array(
 				'library' => 'li3_bot', 'controller' => 'logs', 'action' => 'view',
 				'date' => $next,
-			) + compact('channel'), array('class' => 'next', 'escape' => false));
+			) + compact('channel'), array('rel' => 'next', 'escape' => false));
 		?>
 	</nav>
 </article>

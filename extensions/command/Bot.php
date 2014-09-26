@@ -9,6 +9,10 @@
 namespace li3_bot\extensions\command;
 
 use li3_bot\extensions\command\bot\Irc;
+use li3_bot\models\Tells;
+use li3_bot\models\Logs;
+use li3_bot\models\LogMessages;
+
 
 /**
  * A set of commands to start and control the Lithium Bot.
@@ -36,6 +40,38 @@ class Bot extends \lithium\console\Command {
 	public function irc() {
 		$command = new Irc(array('request' => $this->request));
 		return $command->run();
+	}
+
+	public function migrate() {
+		$ini = parse_ini_file('/Users/mariuswilms/Code/lithium/lithium_site/app/resources/bot/tells.ini');
+
+		foreach ($ini as $key => $value) {
+					$item = Tells::create([
+						'created' => date('Y-m-d H:i:s'),
+					] + compact('key', 'value'));
+					$item->save();
+			}
+	}
+
+	public function migrate_logs() {
+		$old = Logs::find('all', ['channel' => 'li3']);
+
+		foreach (Logs::find('all') as $channel) {
+			foreach (Logs::find('all', compact('channel')) as $date) {
+				$lines = Logs::read($channel, $date);
+
+				foreach ($lines as $line) {
+					$item = LogMessages::create([
+						'created' => $date . ' ' . $line['time'],
+						'user' => $line['user'],
+						'channel' => $channel,
+						'message' => $line['message']
+					]);
+					$item->save();
+				}
+
+			}
+		}
 	}
 }
 

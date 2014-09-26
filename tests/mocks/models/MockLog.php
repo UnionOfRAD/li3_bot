@@ -8,14 +8,6 @@
 
 namespace li3_bot\tests\mocks\models;
 
-use lithium\core\Libraries;
-
-class MockLog extends \li3_bot\models\Logs {
-
-	public static function __init() {
-		static::$path = Libraries::get(true, 'resources') . '/tmp/tests/logs';
-		static::$_pattern = '/^(?P<time>\d+:\d+(:\d+)?) : (?P<user>[^\s]+) : (?P<message>.*)/';
-	}
-}
+class MockLog extends \li3_bot\models\LogMessages {}
 
 ?>

@@ -8,64 +8,92 @@
 
 namespace li3_bot\controllers;
 
-use li3_bot\models\Logs;
+use li3_bot\models\LogMessages;
 
 class LogsController extends \lithium\action\Controller {
 
-	public function index() {
-		$channels = Logs::find('all');
-		$logs = null;
+	public function channels() {
+		$channels = LogMessages::channels();
 
 		$breadcrumbs[] = array(
-			'title' => 'Channels',
-			'url' => array('library' => 'li3_bot', 'controller' => 'logs', 'action' => 'index')
+			'title' => 'Channel Logs',
+			'url' => array('library' => 'li3_bot', 'controller' => 'logs', 'action' => 'channels')
 		);
+		return compact('channels', 'breadcrumbs');
+	}
 
-		if ($channel = $this->request->channel) { /* Here for BC */
-			$breadcrumbs[] = array(
-				'title' => "#{$channel}",
-				'url' => null
-			);
-			$logs = Logs::find('all', compact('channel'));
+	public function index() {
+		$channel = $this->request->channel;
+		$year = $this->request->year ?: date('Y');
 
-			natsort($logs);
-			$logs = array_reverse($logs);
+		$breadcrumbs[] = array(
+			'title' => 'Channel Logs',
+			'url' => array('library' => 'li3_bot', 'controller' => 'logs', 'action' => 'channels')
+		);
+		$breadcrumbs[] = array(
+			'title' => "#{$channel}",
+			'url' => null
+		);
+		$breadcrumbs[] = array(
+			'title' => $year,
+			'url' => array(
+				'library' => 'li3_bot', 'controller' => 'logs',
+				'action' => 'index'
+			) + compact('channel', 'year')
+		);
+		$calendar = LogMessages::calendar($channel, $year);
+
+		$previous = $year - 1;
+		$next = $year + 1;
+		if (!LogMessages::hasYear($channel, $previous)) {
+			$previous = null;
 		}
-		return compact('channels', 'channel', 'logs', 'breadcrumbs');
+		if (!LogMessages::hasYear($channel, $next)) {
+			$next = null;
+		}
+
+		return compact('channels', 'channel', 'calendar', 'year', 'breadcrumbs', 'next', 'previous');
 	}
 
 	public function view() {
 		$date = $this->request->date;
 		$channel = $this->request->channel;
+		$year = date('Y', strtotime($date));
 
 		$baseUrl = array('library' => 'li3_bot', 'controller' => 'logs');
 
 		$breadcrumbs[] = array(
-			'title' => 'Channels',
-			'url' => $baseUrl + array('action' => 'index')
+			'title' => 'Channel Logs',
+			'url' => $baseUrl + array('action' => 'channels')
 		);
 		$breadcrumbs[] = array(
 			'title' => "#{$channel}",
 			'url' => $baseUrl + array('action' => 'index') + compact('channel')
 		);
 		$breadcrumbs[] = array(
-			'title' => $date,
+			'title' => $year,
+			'url' => array(
+				'library' => 'li3_bot', 'controller' => 'logs',
+				'action' => 'index'
+			) + compact('channel', 'year')
+		);
+		$breadcrumbs[] = array(
+			'title' => date('m/d', strtotime($date)),
 			'url' => null
 		);
 
-		$channels = Logs::find('all');
-		$log = Logs::read($channel, $date);
+		$messages = LogMessages::day($channel, $date);
 
 		$previous = date('Y-m-d', strtotime($date) - (60 * 60 * 24));
 		$next = date('Y-m-d', strtotime($date) + (60 * 60 * 24));
 
-		if (!Logs::exists($channel, $previous)) {
+		if (!LogMessages::hasDay($channel, $previous)) {
 			$previous = null;
 		}
-		if (!Logs::exists($channel, $next)) {
+		if (!LogMessages::hasDay($channel, $next)) {
 			$next = null;
 		}
-		return compact('channels', 'channel', 'log', 'date', 'breadcrumbs', 'previous', 'next');
+		return compact('channel', 'messages', 'date', 'breadcrumbs', 'previous', 'next');
 	}
 }
 
