@@ -11,7 +11,7 @@ $nickRgb = function($nick) {
 
 ?>
 <article class="home">
-	<h1 class="h-alpha">IRC Bot</h1>
+	<h1 class="h-alpha">li₃ bot</h1>
 
 	<section class="logs">
 		<h1 class="h-beta">Channel Logs</h1>
