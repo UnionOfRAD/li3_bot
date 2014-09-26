@@ -24,6 +24,9 @@ class LogMessages extends \lithium\data\Model {
 		$query = [
 			'fields' => [
 				"DISTINCT(DATE(created)) as created",
+			],
+			'conditions' => [
+				'channel' => $channel
 			]
 		];
 		if ($year) {
@@ -58,12 +61,10 @@ class LogMessages extends \lithium\data\Model {
 			$date = DateTime::createFromFormat('Y-m-d', $result['created']);
 
 			$data[$date->format('Y')][$date->format('n')][$date->format('j')] = [
-				'count' => true,
-				// 'count' => static::totalMessages($channel, $date->format('Y-m-d')),
+				'count' => static::totalMessages($channel, $date->format('Y-m-d')),
 				'date' => $date
 			];
 		}
-
 		Cache::write('default', $cacheKey, $data, '+12 hours');
 		return $data;
 	}
@@ -89,7 +90,6 @@ class LogMessages extends \lithium\data\Model {
 				"DATE(created)" => $date
 			]
 		]);
-
 		if (date('Y-m-d') != $date) { // Do not cache ongoing days.
 			Cache::write('default', $cacheKey, $result, Cache::PERSIST);
 		}

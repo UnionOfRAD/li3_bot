@@ -76,7 +76,7 @@ $map = [
 						'controller' => 'logs', 'action' => 'view'
 					) + compact('channel') + ['date' => $item['date']->format('Y-m-d')], [
 						'class' => 'cal-day',
-						// 'style' => 'background-color: ' . $heatColor($item['count'], 0, 40) . ';'
+						'style' => 'background-color: ' . $heatColor(min($item['count'], 200), 0, 200) . ';'
 					]); ?>
 				<?php else: ?>
 					<div class="cal-day"><?= $day ?></div>
