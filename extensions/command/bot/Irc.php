@@ -42,7 +42,7 @@ class Irc extends \lithium\console\Command {
 
 			if (isset($this->{$key}) && $key !== '_classes') {
 				$this->{$key} = $value;
-				if ($value && strpos($value, ',') !== false) {
+				if (is_string($value) && $value && strpos($value, ',') !== false) {
 					$this->{$key} = array_map('trim', (array) explode(',', $value));
 				}
 			}
