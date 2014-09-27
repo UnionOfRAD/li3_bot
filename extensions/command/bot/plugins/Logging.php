@@ -8,6 +8,8 @@
 
 namespace li3_bot\extensions\command\bot\plugins;
 
+use lihtium\analyis\Logger;
+
 /**
  * Log plugin
  *
@@ -36,7 +38,8 @@ class Logging extends \li3_bot\extensions\command\bot\Plugin {
 		$model = $this->_classes['model'];
 
 		if (!in_array($data['channel'], $this->_config['channels'])) {
-			return false;
+			Logger::notice("Tried to log for non-whitelisted channel `{$data['chanel']}`.");
+			return;
 		}
 		$colorCodes = '[\x02\x1F\x0F\x16]|\x03(\d\d?(,\d\d?)?)?';
 		$data['message'] = preg_replace("/{$colorCodes}/", null, $data['message']);
@@ -47,7 +50,9 @@ class Logging extends \li3_bot\extensions\command\bot\Plugin {
 			'message' => $data['message'],
 			'created' => date('Y-m-d H:i:s')
 		]);
-		return $item->save();
+		if (!$item->save()) {
+			Logger::notice('Failed to save log message.');
+		}
 	}
 }
 

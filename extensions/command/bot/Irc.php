@@ -97,6 +97,7 @@ class Irc extends \lithium\console\Command {
 			list($ping, $pong) = $this->_parse(':', $line, 2);
 			$this->_pong($pong);
 			foreach ($this->_plugins['poll'] as $class) {
+				$this->out('Triggering ' . get_class($class) . '::poll().');
 				$responses = $class->poll();
 				$this->_respond($this->_channels, $responses);
 			}
@@ -119,6 +120,7 @@ class Irc extends \lithium\console\Command {
 							'user' => $user[0], 'message' => $msg
 						);
 						foreach ($this->_plugins['process'] as $class) {
+							$this->out('Triggering ' . get_class($class) . '::process().');
 							$responses = $class->process($data);
 							$this->_respond($channel, $responses);
 						}
