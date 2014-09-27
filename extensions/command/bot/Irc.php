@@ -108,6 +108,8 @@ class Irc extends \lithium\console\Command {
 		if ($method[0] === '_') {
 			$value = empty($params) ? $this->{$method} : $params[0];
 			$command = strtoupper(ltrim($method, '_')) . " {$value}\r\n";
+
+			$this->out('Sending command: ' . $command);
 			return fwrite($this->_resource, $command);
 		}
 	}
@@ -136,6 +138,8 @@ class Irc extends \lithium\console\Command {
 	}
 
 	protected function _process($line) {
+		// $this->out('GOT: ' . $line . "\n");
+
 		if (stripos($line, 'PING') !== false) {
 			list($ping, $pong) = $this->_parse(':', $line, 2);
 			$this->_pong($pong);
