@@ -62,13 +62,41 @@ class Irc extends \lithium\console\Command {
 		}
 
 		if ($this->_running) {
-			$this->out('connected');
+			$this->out('Connected :-)');
 			$this->_connect();
 			$this->_plugins();
+
+			if ($pcntl = extension_loaded('pcntl')) {
+				$this->_trapSignals();
+			}
 		}
+
 		while ($this->_running && !$this->socket->eof()) {
+			if ($pcntl) {
+				pcntl_signal_dispatch();
+			}
 			$this->_process(fgets($this->_resource));
 		}
+	}
+
+	/**
+	 * Registers signal handlers and handles signals once received.
+	 *
+	 * @return void
+	 */
+	protected function _trapSignals() {
+		$handler = function($number) {
+			switch ($number) {
+				case SIGQUIT:
+					$this->_disconnect('Quitting.');
+					exit(0);
+				case SIGTERM:
+					$this->_disconnect('Terminated.');
+					exit(1);
+			}
+		};
+		pcntl_signal(SIGQUIT, $handler);
+		pcntl_signal(SIGTERM, $handler);
 	}
 
 	public function __call($method, $params) {
@@ -90,6 +118,14 @@ class Irc extends \lithium\console\Command {
 		$password = $this->_password ? " {$this->_password}" : null;
 		$this->_nick("{$this->_nick}{$password}");
 		$this->_user("{$this->_nick} {$this->_config['host']} IRC BOT");
+	}
+
+	protected function _disconnect($message = 'Bye.') {
+		$this->_quit($message);
+		sleep(1);
+
+		$this->socket->close();
+		$this->_running = false;
 	}
 
 	protected function _process($line) {
