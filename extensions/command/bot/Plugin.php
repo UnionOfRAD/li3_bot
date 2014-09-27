@@ -13,16 +13,16 @@ namespace li3_bot\extensions\command\bot;
  *
  */
 abstract class Plugin extends \lithium\console\Command {
-	
+
 	/**
 	 * Called on each ping
 	 *
 	 * @return string
 	 */
-	//abstract public function poll();
-	
+	// abstract public function poll();
+
 	/**
-	 * Process messages and message output 
+	 * Process messages and message output
 	 * {{{
 	 * $data = array(
 	 *     'channel' => '#li3', 'nick'=> 'li3_bot'
@@ -30,9 +30,9 @@ abstract class Plugin extends \lithium\console\Command {
 	 * );
 	 * }}}
 	 *
-	 * @param array $data 
+	 * @param array $data
 	 * @return string
 	 */
-	//abstract public function process($data);
+	// abstract public function process($data);
 }
 ?>

@@ -73,7 +73,6 @@ class Karma extends \li3_bot\extensions\command\bot\Plugin {
 			return String::insert($this->_responses['current'], compact('recipient', 'current'));
 		}
 	}
-
 }
 
 ?>
