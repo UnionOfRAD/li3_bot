@@ -88,14 +88,18 @@ class Tell extends \li3_bot\extensions\command\bot\Plugin {
 
 			if (!empty($words[2]) && $words[2] == 'is') {
 				$tell = $model::find('first', [
-					'conditions' => ['key' => $workds[1]]
+					'conditions' => ['key' => $words[1]]
 				]);
 				if ($tell) {
 					return String::insert($responses['known'], array(
 						'user' => $user, 'tell' => $tell->key, 'answer' => $tell->value
 					));
 				}
-				$tell = $model::create(['key' => $words[1], 'value' => $words[3]]);
+				$tell = $model::create([
+					'key' => $words[1],
+					'value' => $words[3],
+					'created' => date('Y-m-d H:i:s')
+				]);
 
 				if ($tell->save()) {
 					return String::insert($responses['remember'], array(
