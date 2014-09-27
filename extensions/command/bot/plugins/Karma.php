@@ -47,7 +47,7 @@ class Karma extends \li3_bot\extensions\command\bot\Plugin {
 		}
 		list($command, $recipient) = preg_split("/[\s]/", $message, 2) + array(null, null);
 
-		if (!$recipient) {
+		if (!$recipient = trim($recipient)) {
 			return;
 		}
 
