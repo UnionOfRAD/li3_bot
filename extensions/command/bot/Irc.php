@@ -67,9 +67,11 @@ class Irc extends \lithium\console\Command {
 			$this->_plugins();
 
 			if ($pcntl = extension_loaded('pcntl')) {
+				$this->out('Trapping signals...');
 				$this->_trapSignals();
 			}
 		}
+		$this->out('Entering loop.');
 
 		while ($this->_running && !$this->socket->eof()) {
 			if ($pcntl) {
@@ -85,13 +87,16 @@ class Irc extends \lithium\console\Command {
 	 * @return void
 	 */
 	protected function _trapSignals() {
-		$handler = function($number) {
+		$self = $this;
+
+		$handler = function($number) use ($self) {
 			switch ($number) {
 				case SIGQUIT:
-					$this->_disconnect('Quitting.');
+					$self->_disconnect('Quitting.');
 					exit(0);
+				default:
 				case SIGTERM:
-					$this->_disconnect('Terminated.');
+					$self->_disconnect('Terminated.');
 					exit(1);
 			}
 		};
@@ -121,6 +126,8 @@ class Irc extends \lithium\console\Command {
 	}
 
 	protected function _disconnect($message = 'Bye.') {
+		$this->out('Disconnecting :(');
+
 		$this->_quit($message);
 		sleep(1);
 
@@ -132,8 +139,9 @@ class Irc extends \lithium\console\Command {
 		if (stripos($line, 'PING') !== false) {
 			list($ping, $pong) = $this->_parse(':', $line, 2);
 			$this->_pong($pong);
+
 			foreach ($this->_plugins['poll'] as $class) {
-				$this->out('Triggering ' . get_class($class) . '::poll().');
+				// $this->out('Triggering ' . get_class($class) . '::poll().');
 				$responses = $class->poll();
 				$this->_respond($this->_channels, $responses);
 			}
@@ -143,7 +151,6 @@ class Irc extends \lithium\console\Command {
 			$params = $this->_parse("(\s|(?<=\s):|^:)", $line, 5);
 
 			if (isset($params[2])) {
-
 				$cmd = $params[2];
 				$msg = !empty($params[4]) ? $params[4] : null;
 
@@ -156,7 +163,7 @@ class Irc extends \lithium\console\Command {
 							'user' => $user[0], 'message' => $msg
 						);
 						foreach ($this->_plugins['process'] as $class) {
-							$this->out('Triggering ' . get_class($class) . '::process().');
+							// $this->out('Triggering ' . get_class($class) . '::process().');
 							$responses = $class->process($data);
 							$this->_respond($channel, $responses);
 						}
