@@ -10,9 +10,7 @@ use lithium\core\Libraries;
 class LogMessages extends \lithium\data\Model {
 
 	public static function channels() {
-		return array_map(function($v) {
-			return ltrim($v, '#');
-		}, Libraries::get('li3_bot', 'channels'));
+		return Libraries::get('li3_bot', 'channels');
 	}
 
 	public static function calendar($channel, $year = null) {

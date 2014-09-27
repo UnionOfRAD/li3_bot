@@ -31,8 +31,9 @@
 			'library' => 'li3_bot',
 			'controller' => 'logs', 'action' => 'view',
 			'#' => $id,
-			'date' => $item->created()->format('Y-m-d')
-		) + compact('channel'), array('title' => 'context')); ?>
+			'date' => $item->created()->format('Y-m-d'),
+			'channel' => ltrim($channel, '#')
+		), array('title' => 'context')); ?>
 	</td>
 <?php else: ?>
 <tr>

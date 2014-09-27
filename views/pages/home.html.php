@@ -18,11 +18,12 @@ $nickRgb = function($nick) {
 		<?php if ($channels): ?>
 			<ul class="channels">
 				<?php foreach ((array) $channels as $channel): ?>
-					 <li><?php echo $this->html->link("#{$channel}", array(
+					 <li><?php echo $this->html->link($channel, array(
 							'library' => 'li3_bot',
 							'controller' => 'logs', 'action' => 'index',
-							'year' => date('Y')
-					) + compact('channel')); ?></li>
+							'year' => date('Y'),
+							'channel' => ltrim($channel, '#')
+					)); ?></li>
 				<?php endforeach; ?>
 			</ul>
 		<?php else: ?>

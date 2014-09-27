@@ -11,6 +11,7 @@ namespace li3_bot\controllers;
 use lithium\core\Libraries;
 
 use li3_bot\models\LogMessages;
+use Exception;
 
 class LogsController extends \lithium\action\Controller {
 
@@ -25,15 +26,19 @@ class LogsController extends \lithium\action\Controller {
 	}
 
 	public function index() {
-		$channel = $this->request->channel;
+		$channel = '#' . $this->request->channel;
 		$year = $this->request->year ?: date('Y');
+
+		if (!in_array($channel, LogMessages::channels())) {
+			throw new Exception('Unknown channel.');
+		}
 
 		$breadcrumbs[] = array(
 			'title' => 'Channel Logs',
 			'url' => array('library' => 'li3_bot', 'controller' => 'logs', 'action' => 'channels')
 		);
 		$breadcrumbs[] = array(
-			'title' => "#{$channel}",
+			'title' => $channel,
 			'url' => null
 		);
 		$breadcrumbs[] = array(
@@ -59,8 +64,12 @@ class LogsController extends \lithium\action\Controller {
 
 	public function view() {
 		$date = $this->request->date;
-		$channel = $this->request->channel;
+		$channel = '#' . $this->request->channel;
 		$year = date('Y', strtotime($date));
+
+		if (!in_array($channel, LogMessages::channels())) {
+			throw new Exception('Unknown channel.');
+		}
 
 		$baseUrl = array('library' => 'li3_bot', 'controller' => 'logs');
 
@@ -69,7 +78,7 @@ class LogsController extends \lithium\action\Controller {
 			'url' => $baseUrl + array('action' => 'channels')
 		);
 		$breadcrumbs[] = array(
-			'title' => "#{$channel}",
+			'title' => $channel,
 			'url' => null
 		);
 		$breadcrumbs[] = array(

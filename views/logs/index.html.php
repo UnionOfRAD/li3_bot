@@ -60,7 +60,7 @@ $map = [
 
 ?>
 <article class="logs-index">
-	<h1 class="h-alpha"><?= $this->title("#{$channel} Channel Logs for {$year}"); ?></h1>
+	<h1 class="h-alpha"><?= $this->title("{$channel} Channel Logs for {$year}"); ?></h1>
 
 	<div class="cals">
 		<?php foreach ($calendar as $year => $months): ?>
@@ -73,8 +73,9 @@ $map = [
 				<?php if ($item['count']): ?>
 					<?= $this->html->link($day, array(
 						'library' => 'li3_bot',
-						'controller' => 'logs', 'action' => 'view'
-					) + compact('channel') + ['date' => $item['date']->format('Y-m-d')], [
+						'controller' => 'logs', 'action' => 'view',
+						'channel' => ltrim($channel, '#')
+					) + ['date' => $item['date']->format('Y-m-d')], [
 						'class' => 'cal-day',
 						'style' => $item['count'] !== null ? 'background-color: ' . $heatColor(min($item['count'], 200), 0, 200) . ';' : null
 					]); ?>
@@ -94,13 +95,15 @@ $map = [
 			echo $this->html->link('&larr; previous', array(
 				'library' => 'li3_bot', 'controller' => 'logs', 'action' => 'index',
 				'year' => $previous,
-			) + compact('channel'), array('rel' => 'prev', 'escape' => false));
+				'channel' => ltrim($channel, '#')
+			), array('rel' => 'prev', 'escape' => false));
 		?>
 		<?php if ($next)
 			echo $this->html->link('next &rarr;', array(
 				'library' => 'li3_bot', 'controller' => 'logs', 'action' => 'index',
 				'year' => $next,
-			) + compact('channel'), array('rel' => 'next', 'escape' => false));
+				'channel' => ltrim($channel, '#')
+			), array('rel' => 'next', 'escape' => false));
 		?>
 	</nav>
 </article>

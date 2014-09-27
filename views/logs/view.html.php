@@ -1,5 +1,5 @@
 <article class="logs-view">
-	<h1 class="h-alpha"><?= $this->title("#{$channel} Channel Logs for " . date('m/d/Y', strtotime($date))); ?></h1>
+	<h1 class="h-alpha"><?= $this->title("{$channel} Channel Logs for " . date('m/d/Y', strtotime($date))); ?></h1>
 
 	<table class="messages">
 	<?php foreach ($messages as $i => $line): ?>
@@ -16,13 +16,15 @@
 			echo $this->html->link('&larr; previous', array(
 				'library' => 'li3_bot', 'controller' => 'logs', 'action' => 'view',
 				'date' => $previous,
-			) + compact('channel'), array('rel' => 'prev', 'escape' => false));
+				'channel' => ltrim($channel, '#')
+			), array('rel' => 'prev', 'escape' => false));
 		?>
 		<?php if ($next)
 			echo $this->html->link('next &rarr;', array(
 				'library' => 'li3_bot', 'controller' => 'logs', 'action' => 'view',
 				'date' => $next,
-			) + compact('channel'), array('rel' => 'next', 'escape' => false));
+				'channel' => ltrim($channel, '#')
+			), array('rel' => 'next', 'escape' => false));
 		?>
 	</nav>
 </article>
