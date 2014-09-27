@@ -32,12 +32,21 @@ class Karma extends \lithium\data\Model {
 
 	public static function increment($user) {
 		$item = static::find('first', ['conditions' => compact('user')]);
-		return $item && $item->save(['score' => $item->score + 1]);
+
+		if (!$item) {
+			$item = static::create(compact('user'));
+		}
+		return $item->save(['score' => $item->score + 1]);
 	}
 
 	public static function decrement($user) {
 		$item = static::find('first', ['conditions' => compact('user')]);
-		return $item && $item->save(['score' => $item->score > 0 ? $item->score - 1 : 0]);
+
+		if (!$item) {
+			$item = static::create(compact('user') + ['score' => 0]);
+			return $item->save();
+		}
+		return $item->save(['score' => $item->score > 0 ? $item->score - 1 : 0]);
 	}
 }
 
