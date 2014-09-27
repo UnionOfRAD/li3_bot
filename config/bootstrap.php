@@ -16,7 +16,8 @@ Libraries::add('li3_bot', array('bootstrap' => false) + Libraries::get('li3_bot'
 	'port' => 6667,
 	'nick' => 'li3bot',
 	'channels' => ['#li3-bot'],
-	'rewriters' => []
+	'rewriters' => [],
+	'feeds' => []
 ));
 
 ?>
