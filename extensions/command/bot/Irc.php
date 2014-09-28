@@ -8,17 +8,17 @@
 
 namespace li3_bot\extensions\command\bot;
 
+use lithium\analysis\Logger;
 use lithium\core\Libraries;
+use Exception;
 
 class Irc extends \lithium\console\Command {
 
 	public $socket = null;
 
-	protected $_running = false;
-
-	protected $_resource = null;
-
 	protected $_nick = 'li3_bot';
+
+	protected $_originalNick = 'li3_bot';
 
 	protected $_password = '';
 
@@ -33,52 +33,75 @@ class Irc extends \lithium\console\Command {
 		'response' => 'lithium\console\Response'
 	);
 
+	/**
+	 * Auto configuration.
+	 *
+	 * @var array
+	 */
+	protected $_autoConfig = array('classes' => 'merge', 'nick', 'password', 'channel');
+
+	public function __construct(array $config = array()) {
+		parent::__construct($config + Libraries::get('li3_bot'));
+
+		$this->_originalNick = $this->_nick;
+	}
+
 	public function _init() {
 		parent::_init();
-		$this->_config = Libraries::get('li3_bot');
 
-		foreach ($this->_config as $key => $value) {
-			$key = "_{$key}";
-
-			if (isset($this->{$key}) && $key !== '_classes') {
-				$this->{$key} = $value;
-				if (is_string($value) && $value && strpos($value, ',') !== false) {
-					$this->{$key} = array_map('trim', (array) explode(',', $value));
-				}
-			}
-		}
 		$this->socket = $this->_instance('socket', array(
 			'host' => $this->_config['host'],
 			'port' => $this->_config['port']
 		));
+
+		foreach (Libraries::locate('command.bot.plugins') as $class) {
+			if (method_exists($class, 'poll')) {
+				Logger::debug("Registering `poll` method from plugin `{$class}`.");
+				$this->_plugins['poll'][] = new $class($this->_config);
+			}
+			if (method_exists($class, 'process')) {
+				Logger::debug("Registering `process` method from plugin `{$class}`.");
+				$this->_plugins['process'][] = new $class($this->_config);
+			}
+		}
 	}
 
 	public function run() {
-		try {
-			$this->_running = (boolean) $this->socket->open();
-			$this->_resource = $this->socket->resource();
-		} catch (Exception $e) {
-			$this->out($e);
+		if (!$this->_connect()) {
+			Logger::warning('Failed to connect.');
+			return false;
 		}
+		Logger::debug('Connected :-)');
 
-		if ($this->_running) {
-			$this->out('Connected :-)');
-			$this->_connect();
-			$this->_plugins();
-
-			if ($pcntl = extension_loaded('pcntl')) {
-				$this->out('Trapping signals...');
-				$this->_trapSignals();
-			}
+		if ($pcntl = extension_loaded('pcntl')) {
+			Logger::debug('Trapping signals...');
+			$this->_trapSignals();
 		}
-		$this->out('Entering loop.');
+		Logger::debug('Entering loop.');
 
-		while ($this->_running && !$this->socket->eof()) {
+		$start = time();
+		while (is_resource($this->socket->resource())) {
 			if ($pcntl) {
 				pcntl_signal_dispatch();
 			}
-			$this->_process(fgets($this->_resource));
+			if ($start + (60 * 30) >= time()) {
+				foreach ($this->_plugins['poll'] as $class) {
+					$this->_respond($this->_channels, $class->poll());
+				}
+				$start = time();
+			}
+
+			$r = [$this->socket->resource()];
+			$w = [];
+			$e = [];
+			$avail = stream_select($r, $w, $e, 5);
+
+			if ($avail !== 1) {
+				continue;
+			}
+			$this->_process($this->_read());
 		}
+		$this->_disconnect();
 	}
 
 	/**
@@ -104,136 +127,156 @@ class Irc extends \lithium\console\Command {
 		pcntl_signal(SIGTERM, $handler);
 	}
 
-	public function __call($method, $params) {
-		if ($method[0] === '_') {
-			$value = empty($params) ? $this->{$method} : $params[0];
-			$command = strtoupper(ltrim($method, '_')) . " {$value}\r\n";
-
-			$this->out('Sending command: ' . $command);
-			return fwrite($this->_resource, $command);
-		}
-	}
-
-	protected function _privmsg($command) {
-		if (fwrite($this->_resource, "PRIVMSG {$command}\r\n")) {
-			$this->_process(":{$this->_nick}!@localhost PRIVMSG {$command}\r\n");
-			return true;
-		}
-	}
-
 	protected function _connect() {
-		$password = $this->_password ? " {$this->_password}" : null;
-		$this->_nick("{$this->_nick}{$password}");
-		$this->_user("{$this->_nick} {$this->_config['host']} IRC BOT");
+		try {
+			if (!$this->socket->open()) {
+				return false;
+			}
+		} catch (Exception $e) {
+			Logger::warning($e->getMessage());
+			return false;
+		}
+
+		$this->_write('NICK', "{$this->_nick}");
+		$this->_write('USER', "{$this->_nick} {$this->_config['host']} IRC BOT");
+
+		return true;
 	}
 
 	protected function _disconnect($message = 'Bye.') {
-		$this->out('Disconnecting :(');
+		Logger::debug('Disconnecting :(');
 
-		$this->_quit($message);
+		if (!is_resource($this->socket->resource())) {
+			return true;
+		}
+		$this->_write('QUIT', $message);
 		sleep(1);
 
 		$this->socket->close();
-		$this->_running = false;
+	}
+
+	protected function _read() {
+		if ($result = fgets($this->socket->resource())) {
+			$this->out('<< {:red}' . rtrim($result) . '{:end}');
+			return $result;
+		}
+		return null;
+	}
+
+	protected function _write($command, $params = null) {
+		if ($params) {
+			$command .= ' ' . $params;
+		}
+		$command .= "\r\n";
+
+		$this->out('>> {:green}' . rtrim($command) . '{:end}');
+		return fwrite($this->socket->resource(), $command);
 	}
 
 	protected function _process($line) {
-		// $this->out('GOT: ' . $line . "\n");
-
+		// The server will check if we're alive. We must reply with a pong.
 		if (stripos($line, 'PING') !== false) {
 			list($ping, $pong) = $this->_parse(':', $line, 2);
-			$this->_pong($pong);
-
-			foreach ($this->_plugins['poll'] as $class) {
-				// $this->out('Triggering ' . get_class($class) . '::poll().');
-				$responses = $class->poll();
-				$this->_respond($this->_channels, $responses);
-			}
-			return true;
+			$this->_write('PONG', $pong);
+			return;
 		}
-		if ($line[0] === ':') {
-			$params = $this->_parse("(\s|(?<=\s):|^:)", $line, 5);
 
-			if (isset($params[2])) {
-				$cmd = $params[2];
-				$msg = !empty($params[4]) ? $params[4] : null;
+		if ($line[0] !== ':') {
+			return;
+		}
+		$params = $this->_parse("(\s|(?<=\s):|^:)", $line, 5);
 
-				switch ($cmd) {
-					case 'PRIVMSG':
-						$channel = $params[3];
-						$user = $this->_parse("!", $params[1], 3);
-						$data = array(
-							'channel' => $channel, 'nick'=> $this->_nick,
-							'user' => $user[0], 'message' => $msg
-						);
-						foreach ($this->_plugins['process'] as $class) {
-							// $this->out('Triggering ' . get_class($class) . '::process().');
-							$responses = $class->process($data);
-							$this->_respond($channel, $responses);
-						}
-					break;
+		if (!isset($params[2])) {
+			return null;
+		}
+		$cmd = $params[2];
+		$msg = !empty($params[4]) ? $params[4] : null;
 
-					case '461':
-					case '422':
-					case '376':
-						foreach ((array) $this->_channels as $channel) {
-							if (empty($this->_joined[$channel])) {
-								$this->_join($channel);
-								$this->out("{$this->_nick} joined {$channel}");
-								$this->_joined[$channel] = true;
-							}
-						}
-					break;
+		switch ($cmd) {
+			case 'PRIVMSG':
+				$channel = $params[3];
+				$user = $this->_parse("!", $params[1], 3);
 
-					case '433': // Nick already registerd
-						$this->out($msg);
-						$this->_nick = $this->_nick . '_';
-						$this->_connect();
-					break;
-
-					case '353':
-						$this->out('Names on ' . str_replace('=', '', $msg));
-					break;
-
-					default:
-						$this->out($msg);
-					break;
+				$data = array(
+					'channel' => $channel,
+					'nick'=> $this->_nick,
+					'user' => $user[0],
+					'message' => $msg
+				);
+				foreach ($this->_plugins['process'] as $class) {
+					$this->_respond((array) $channel, $class->process($data));
 				}
-			}
+			break;
+
+			case '461':
+			case '422':
+			case '376':
+				foreach ($this->_channels as $channel) {
+					if (empty($this->_joined[$channel])) {
+						$this->_write('JOIN', $channel);
+						$this->_joined[$channel] = true;
+
+						Logger::debug("Bot `{$this->_nick}` joined channel `{$channel}`.");
+					}
+				}
+			break;
+
+			case '433': // Nick already registerd
+				Logger::debug("Nick {$this->_nick} already in use.");
+
+				$this->_disconnect();
+				$this->_nick .= '_';
+				$this->_connect();
+
+			break;
+
+			case '353':
+				// Logger::debug('Names on ' . str_replace('=', '', $msg) . '.');
+			break;
+
+			case 'NOTICE':
+				if (preg_match('/identify.*NickServ.*identify/', $msg) && $this->_password) {
+					Logger::debug("Identifying as {$this->_nick}.");
+					$this->_write('PRIVMSG', "NickServ :IDENTIFY {$this->_nick} {$this->_password}");
+				}
+			break;
+
+			case 'MODE':
+				if ($msg === '+i') { // We're now identified.
+					if ($this->_password && $this->_nick !== $this->_originalNick) {
+						$this->_nick = $this->_originalNick;
+						Logger::debug("Reclaiming nick {$this->_nick}.");
+
+						$this->_write('PRIVMSG', "NickServ :GHOST {$this->_nick} {$this->_password}");
+						sleep(2);
+						$this->_write('PRIVMSG', "NickServ :RELEASE {$this->_nick} {$this->_password}");
+						sleep(2);
+						$this->_write('PRIVMSG', "NickServ :IDENTIFY {$this->_nick} {$this->_password}");
+					}
+				}
+			default:
+				return;
+			break;
 		}
 	}
 
-	protected function _plugins() {
-		$classes = Libraries::locate('command.bot.plugins');
-
-		foreach ($classes as $class) {
-			if (method_exists($class, 'poll')) {
-				$this->out("Registering `poll` method from plugin `{$class}`.");
-				$this->_plugins['poll'][] = new $class($this->_config);
-			}
-			if (method_exists($class, 'process')) {
-				$this->out("Registering `process` method from plugin `{$class}`.");
-				$this->_plugins['process'][] = new $class($this->_config);
-			}
-		}
+	protected function _parse($regex, $string, $offset = -1) {
+		return str_replace(array("\r\n", "\n"), '', preg_split("/{$regex}+/", $string, $offset));
 	}
 
 	protected function _respond($channels, $responses) {
 		if (empty($responses)) {
 			return;
 		}
-		foreach ((array) $channels as $channel) {
-			$this->out('Sending ' . count($responses) . " message(s) to channel `{$channel}`:");
+		foreach ($channels as $channel) {
+			Logger::debug('Responding with ' . count($responses) . " message(s) to channel `{$channel}`:");
 
 			foreach ((array) $responses as $response) {
-				$this->out($response);
-				$this->_privmsg("{$channel} :{$response}");
+				if ($this->_write('PRIVMSG', $command = "{$channel} :{$response}")) {
+					$this->_process(":{$this->_nick}!@localhost PRIVMSG {$command}\r\n");
+				}
 			}
 		}
-	}
-
-	protected function _parse($regex, $string, $offset = -1) {
-		return str_replace(array("\r\n", "\n"), '', preg_split("/{$regex}+/", $string, $offset));
 	}
 }
 

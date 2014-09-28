@@ -14,9 +14,10 @@ use lithium\core\Libraries;
 Libraries::add('li3_bot', array('bootstrap' => false) + Libraries::get('li3_bot') + array(
 	'host' => 'irc.freenode.net',
 	'port' => 6667,
-	'nick' => 'li3bot',
-	'password' => '',
 	'channels' => ['#li3-bot'],
+	'nick' => 'li3bot',
+	// By providing a nick password, you'll automatically enable reclaiming of a nick.
+	'password' => null,
 	'rewriters' => [],
 	'feeds' => []
 ));
