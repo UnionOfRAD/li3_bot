@@ -84,7 +84,7 @@ class Irc extends \lithium\console\Command {
 			if ($pcntl) {
 				pcntl_signal_dispatch();
 			}
-			if ($start + (60 * 30) >= time()) {
+			if ($start < time() - (60 * 30)) {
 				foreach ($this->_plugins['poll'] as $class) {
 					$this->_respond($this->_channels, $class->poll());
 				}
@@ -94,9 +94,7 @@ class Irc extends \lithium\console\Command {
 			$r = [$this->socket->resource()];
 			$w = [];
 			$e = [];
-			$avail = stream_select($r, $w, $e, 5);
-
-			if ($avail !== 1) {
+			if (stream_select($r, $w, $e, 2) !== 1) {
 				continue;
 			}
 			$this->_process($this->_read());
