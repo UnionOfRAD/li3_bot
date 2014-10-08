@@ -38,7 +38,7 @@ class Irc extends \lithium\console\Command {
 	 *
 	 * @var array
 	 */
-	protected $_autoConfig = array('classes' => 'merge', 'nick', 'password', 'channel');
+	protected $_autoConfig = array('classes' => 'merge', 'nick', 'password', 'channels');
 
 	public function __construct(array $config = array()) {
 		parent::__construct($config + Libraries::get('li3_bot'));
