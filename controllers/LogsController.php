@@ -45,8 +45,9 @@ class LogsController extends \lithium\action\Controller {
 			'title' => $year,
 			'url' => array(
 				'library' => 'li3_bot', 'controller' => 'logs',
-				'action' => 'index'
-			) + compact('channel', 'year')
+				'action' => 'index',
+				'channel' => ltrim('#' , $channel)
+			) + compact('year')
 		);
 		$calendar = LogMessages::calendar($channel, $year);
 
@@ -85,8 +86,9 @@ class LogsController extends \lithium\action\Controller {
 			'title' => $year,
 			'url' => array(
 				'library' => 'li3_bot', 'controller' => 'logs',
-				'action' => 'index'
-			) + compact('channel', 'year')
+				'action' => 'index',
+				'channel' => ltrim('#' , $channel)
+			) + compact('year')
 		);
 		$breadcrumbs[] = array(
 			'title' => date('m/d', strtotime($date)),
