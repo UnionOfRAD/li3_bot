@@ -70,7 +70,7 @@ class LogMessages extends \lithium\data\Model {
 			];
 		}
 
-		Cache::write('default', $cacheKey, $data, date('Y') == $year ? '+3 hours' : Cache::PERSIST);
+		Cache::write('default', $cacheKey, $data, date('Y') == $year ? '+3 hours' : '+1 day');
 		return $data;
 	}
 
