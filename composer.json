@@ -3,10 +3,15 @@
 	"type": "lithium-library",
 	"description": "IRC bot for li3.",
 	"keywords": ["irc", "bot", "lithium", "li3"],
-	"homepage": "https://github.com/UnionOfRAD/li3_bot",
+    "homepage": "http://li3.me",
 	"license": "BSD-3-clause",
+    "authors": [
+        {"name": "Union of RAD"},
+        {"name": "The Community"}
+    ],
 	"require": {
 		"php": ">=5.3",
-		"composer/installers": "*"
+        "composer/installers": "1.*",
+        "unionofrad/lithium": "1.0.0@RC"
 	}
 }
